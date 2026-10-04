@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: { default: "OdiaDesk — Your Odisha. Your Local Desk.", template: "%s | OdiaDesk" },
   description: "OdiaDesk brings Odisha's local news, district updates, alerts, jobs, education, events and useful local information together.",
   keywords: ["Odisha news","Odia news","local Odisha","district news Odisha","Odisha jobs","Odisha events","OdiaDesk"],
-  alternates: { canonical: "https://odiadesk.com" },
+  alternates: { canonical: "https://odiadesk.com", types: { "application/rss+xml": "https://odiadesk.com/rss.xml" } },
   openGraph: {
     title: "OdiaDesk — Your Odisha. Your Local Desk.",
     description: "Local news and useful information for every corner of Odisha.",
