@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isValidAdminToken, ADMIN_COOKIE } from "@/lib/admin-auth";
-import { validateArticle } from "@/lib/validation";
+import { validateArticle, isSafeHttpUrl } from "@/lib/validation";
 import { cookies } from "next/headers";
 
 async function authorized() {
@@ -74,7 +74,7 @@ export async function PATCH(request:Request) {
   }
 
   if ("sourceUrl" in data) {
-    if (!/^https?:\\/\\//i.test(String(data.sourceUrl))) return NextResponse.json({error:"sourceUrl must be a valid HTTP(S) URL"},{status:400});
+    if (!isSafeHttpUrl(String(data.sourceUrl))) return NextResponse.json({error:"sourceUrl must be a valid HTTP(S) URL"},{status:400});
     const duplicate = await prisma.article.findFirst({where:{sourceUrl:String(data.sourceUrl),NOT:{id:body.id}}});
     if (duplicate) return NextResponse.json({error:"Another article already uses this source URL."},{status:409});
   }
