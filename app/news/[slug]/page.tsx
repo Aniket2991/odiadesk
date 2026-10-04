@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic="force-dynamic";
 
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){
- const {slug}=await params; const a=process.env.DATABASE_URL?await prisma.article.findUnique({where:{slug},include:{district:true}}):null;
+ const {slug}=await params; const a=process.env.DATABASE_URL?await prisma.article.findFirst({where:{slug,status:"PUBLISHED"},include:{district:true}}):null;
  return a?{title:a.title,description:a.excerpt,alternates:{canonical:"/news/"+a.slug}}:{title:"News story"};
 }
 export default async function ArticlePage({params}:{params:Promise<{slug:string}>}){
