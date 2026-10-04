@@ -1,0 +1,6 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+enum ArticleStatus { DRAFT REVIEW PUBLISHED ARCHIVED }
+enum Language { ODIA ENGLISH }
+model District { id String @id @default(cuid()) name String slug String @unique region String? articles Article[] createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model Article { id String @id @default(cuid()) slug String @unique title String excerpt String content String language Language @default(ENGLISH) status ArticleStatus @default(DRAFT) category String sourceName String sourceUrl String imageUrl String? districtId String? district District? @relation(fields:[districtId], references:[id], onDelete:SetNull) publishedAt DateTime? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt @@index([status,publishedAt]) @@index([districtId,status]) @@index([category,status]) }
