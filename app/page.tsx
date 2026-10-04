@@ -19,7 +19,7 @@ export default function Home() {
       <header className="header"><div className="container nav">
         <Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link>
         <nav className="navlinks">{["News","Jobs","Events","Business"].map((x)=><Link key={x} href={"/"+x.toLowerCase()}>{x}</Link>)}</nav>
-        <button className="districtButton">📍 Select District</button>
+        <Link href="/districts" className="districtButton">📍 Select District</Link>
       </div></header>
 
       <section className="hero"><div className="container heroGrid">
@@ -27,7 +27,7 @@ export default function Home() {
           <div className="eyebrow">ODIA DESK • ODISHA</div>
           <h1>What’s happening <span>near you?</span></h1>
           <p className="heroText">Local news, public updates, jobs, events and useful information — organised around the places you actually live.</p>
-          <div className="heroActions"><Link href="/district/khordha" className="primary">Explore a District →</Link><Link href="/news" className="secondary">Browse latest</Link></div>
+          <div className="heroActions"><Link href="/districts" className="primary">Explore a District →</Link><Link href="/news" className="secondary">Browse latest</Link></div>
           <div className="trustRow"><span>✓ District-first</span><span>✓ Mobile-first</span><span>✓ Built for Odisha</span></div>
         </div>
         <div className="heroCard"><div className="heroCardTop"><span>LOCAL DESK</span><b>30 districts</b></div><div className="odishaMap">ଓଡ଼ିଶା</div><div className="mapCaption">A local desk for every district</div><div className="districtMini">{districts.slice(0,6).map(d=><Link href={"/district/"+d.slug} key={d.slug}>{d.name}</Link>)}</div></div>
@@ -44,7 +44,7 @@ export default function Home() {
       </div></section>
 
       <section className="section"><div className="container districtSection">
-        <div className="sectionHead"><div><span className="eyebrow">YOUR DISTRICT</span><h2>Start with your place.</h2></div><span className="muted">30 districts coming together</span></div>
+        <div className="sectionHead"><div><span className="eyebrow">YOUR DISTRICT</span><h2>Start with your place.</h2></div><Link href="/districts" className="textLink">View all 30 →</Link></div>
         <div className="districtGrid">{districts.map(d=><Link href={"/district/"+d.slug} key={d.slug}>{d.name}<span>→</span></Link>)}</div>
       </div></section>
 
