@@ -3,8 +3,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import { districts } from "@/lib/districts";
 
-type Article={id:string;title:string;status:string;category:string;district?:{name:string}|null;createdAt:string};
+type Article={
+  id:string; title:string; excerpt:string; content:string; status:string; category:string;
+  sourceName:string; sourceUrl:string; language:string; districtId?:string|null;
+  district?:{name:string}|null; createdAt:string
+};
 const categories=["Odisha","Districts","Politics","Crime","Business","Education","Jobs","Sports","Technology","Health","Culture","Alerts","Events","Traffic","Transport","Weather","Public Issues"];
+
+const emptyForm={title:"",excerpt:"",content:"",category:"Districts",sourceName:"",sourceUrl:"",districtSlug:"",language:"ENGLISH",status:"DRAFT"};
 
 export default function AdminClient() {
   const [articles,setArticles]=useState<Article[]>([]);
@@ -13,57 +19,136 @@ export default function AdminClient() {
   const [busy,setBusy]=useState(false);
   const [importBusy,setImportBusy]=useState(false);
   const [sourceUrl,setSourceUrl]=useState("");
-  const [form,setForm]=useState({title:"",excerpt:"",content:"",category:"Districts",sourceName:"",sourceUrl:"",districtSlug:"",language:"ENGLISH",status:"DRAFT"});
+  const [editing,setEditing]=useState<Article|null>(null);
+  const [form,setForm]=useState(emptyForm);
 
-  async function load(){const r=await fetch("/api/admin/articles");if(r.ok){const d=await r.json();setArticles(d.articles)}}
+  async function load(){
+    const r=await fetch("/api/admin/articles");
+    if(r.ok){const d=await r.json();setArticles(d.articles)}
+  }
   useEffect(()=>{load()},[]);
 
   function set(k:string,v:string){setForm(x=>({...x,[k]:v}))}
+
+  function startEdit(a:Article){
+    const districtSlug=districts.find(d=>d.name===a.district?.name)?.slug || "";
+    setEditing(a);
+    setMessage("");
+    setForm({
+      title:a.title, excerpt:a.excerpt, content:a.content, category:a.category,
+      sourceName:a.sourceName, sourceUrl:a.sourceUrl, districtSlug,
+      language:a.language, status:a.status==="ARCHIVED"?"DRAFT":a.status
+    });
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function cancelEdit(){setEditing(null);setForm(emptyForm);setMessage("")}
+
   async function submit(e:FormEvent){
     e.preventDefault();setBusy(true);setMessage("");
-    const r=await fetch("/api/admin/articles",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(form)});
+    const method=editing?"PATCH":"POST";
+    const payload=editing?{id:editing.id,...form}:form;
+    const r=await fetch("/api/admin/articles",{method,headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
     const d=await r.json();
-    if(!r.ok)setMessage(d.error||"Could not create article."); else {setMessage("Article saved.");setForm({...form,title:"",excerpt:"",content:"",sourceName:"",sourceUrl:"",districtSlug:"",status:"DRAFT"});load();}
+    if(!r.ok)setMessage(d.error||"Could not save article.");
+    else {
+      setMessage(editing?"Changes saved.":"Article saved.");
+      setEditing(null);setForm(emptyForm);load();
+    }
     setBusy(false);
   }
+
   async function importDraft(e:FormEvent){
     e.preventDefault();setImportBusy(true);setImportMessage("");
     const r=await fetch("/api/admin/ingest",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({sourceUrl})});
     const d=await r.json();
     if(!r.ok)setImportMessage(d.error||"Could not import source.");
-    else {setImportMessage("Draft created. Review it in the queue, then edit/publish.");setSourceUrl("");load();}
+    else {
+      setImportMessage("Draft created. Open Edit below to verify, rewrite and publish.");
+      setSourceUrl("");load();
+    }
     setImportBusy(false);
   }
+
   async function changeStatus(id:string,status:string){
     const r=await fetch("/api/admin/articles",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({id,status})});
     if(r.ok) load();
   }
+
   async function logout(){await fetch("/api/admin/logout",{method:"POST"});location.href="/admin/login"}
 
   return <div className="adminWorkspace">
-    <div className="adminToolbar"><strong>Editorial desk</strong><button className="secondary" onClick={logout}>Log out</button></div>
+    <div className="adminToolbar">
+      <strong>Editorial desk</strong>
+      <button className="secondary" onClick={logout}>Log out</button>
+    </div>
+
     <div className="adminEditorGrid">
       <div>
         <div className="adminForm" style={{marginBottom:24}}>
-          <div className="formHeader"><span className="eyebrow">SOURCE IMPORT</span><h2>Create a review draft</h2><p>Import headline/description metadata only. The full source article is never copied.</p></div>
+          <div className="formHeader">
+            <span className="eyebrow">SOURCE IMPORT</span>
+            <h2>Create a review draft</h2>
+            <p>Import headline/description metadata only. The full source article is never copied.</p>
+          </div>
           <form onSubmit={importDraft}>
             <label>Source URL<input type="url" value={sourceUrl} onChange={e=>setSourceUrl(e.target.value)} placeholder="https://…" required /></label>
             {importMessage&&<p className="formMessage">{importMessage}</p>}
             <button className="secondary" disabled={importBusy}>{importBusy?"Importing…":"Import as draft"}</button>
           </form>
         </div>
+
         <form className="adminForm" onSubmit={submit}>
-          <div className="formHeader"><span className="eyebrow">NEW STORY</span><h2>Create article</h2></div>
+          <div className="formHeader">
+            <span className="eyebrow">{editing?"EDIT STORY":"NEW STORY"}</span>
+            <h2>{editing?"Edit article":"Create article"}</h2>
+            {editing&&<p>Rewrite and verify the source-assisted draft before publishing.</p>}
+          </div>
+
           <label>Headline<input value={form.title} onChange={e=>set("title",e.target.value)} required /></label>
           <label>Excerpt<textarea value={form.excerpt} onChange={e=>set("excerpt",e.target.value)} required /></label>
           <label>Story content<textarea className="largeInput" value={form.content} onChange={e=>set("content",e.target.value)} required /></label>
-          <div className="formTwo"><label>Category<select value={form.category} onChange={e=>set("category",e.target.value)}>{categories.map(x=><option key={x}>{x}</option>)}</select></label><label>District<select value={form.districtSlug} onChange={e=>set("districtSlug",e.target.value)}><option value="">All Odisha</option>{districts.map(d=><option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label></div>
-          <div className="formTwo"><label>Source name<input value={form.sourceName} onChange={e=>set("sourceName",e.target.value)} required /></label><label>Source URL<input type="url" value={form.sourceUrl} onChange={e=>set("sourceUrl",e.target.value)} placeholder="https://…" required /></label></div>
-          <div className="formTwo"><label>Language<select value={form.language} onChange={e=>set("language",e.target.value)}><option value="ENGLISH">English</option><option value="ODIA">Odia</option></select></label><label>Save as<select value={form.status} onChange={e=>set("status",e.target.value)}><option>DRAFT</option><option>REVIEW</option><option>PUBLISHED</option></select></label></div>
-          {message&&<p className="formMessage">{message}</p>}<button className="primary" disabled={busy}>{busy?"Saving…":"Save article"}</button>
+
+          <div className="formTwo">
+            <label>Category<select value={form.category} onChange={e=>set("category",e.target.value)}>{categories.map(x=><option key={x}>{x}</option>)}</select></label>
+            <label>District<select value={form.districtSlug} onChange={e=>set("districtSlug",e.target.value)}><option value="">All Odisha</option>{districts.map(d=><option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>
+          </div>
+
+          <div className="formTwo">
+            <label>Source name<input value={form.sourceName} onChange={e=>set("sourceName",e.target.value)} required /></label>
+            <label>Source URL<input type="url" value={form.sourceUrl} onChange={e=>set("sourceUrl",e.target.value)} placeholder="https://…" required /></label>
+          </div>
+
+          <div className="formTwo">
+            <label>Language<select value={form.language} onChange={e=>set("language",e.target.value)}><option value="ENGLISH">English</option><option value="ODIA">Odia</option></select></label>
+            <label>Save as<select value={form.status} onChange={e=>set("status",e.target.value)}><option>DRAFT</option><option>REVIEW</option><option>PUBLISHED</option></select></label>
+          </div>
+
+          {message&&<p className="formMessage">{message}</p>}
+          <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+            <button className="primary" disabled={busy}>{busy?(editing?"Saving…":"Creating…"):(editing?"Save changes":"Save article")}</button>
+            {editing&&<button type="button" className="secondary" onClick={cancelEdit}>Cancel</button>}
+          </div>
         </form>
       </div>
-      <div><div className="formHeader"><span className="eyebrow">CONTENT QUEUE</span><h2>Recent stories</h2></div><div className="articleQueue">{articles.map(a=><div className="queueItem" key={a.id}><div><strong>{a.title}</strong><small>{a.category} · {a.district?.name||"All Odisha"} · {a.status}</small></div><div className="queueActions">{a.status!=="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"PUBLISHED")}>Publish</button>}{a.status==="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"ARCHIVED")}>Archive</button>}</div></div>)}{!articles.length&&<div className="notice"><strong>No stories yet.</strong><p>Create the first verified story above.</p></div>}</div></div>
+
+      <div>
+        <div className="formHeader"><span className="eyebrow">CONTENT QUEUE</span><h2>Recent stories</h2></div>
+        <div className="articleQueue">
+          {articles.map(a=><div className="queueItem" key={a.id}>
+            <div>
+              <strong>{a.title}</strong>
+              <small>{a.category} · {a.district?.name||"All Odisha"} · {a.status}</small>
+            </div>
+            <div className="queueActions">
+              <button onClick={()=>startEdit(a)}>Edit</button>
+              {a.status!=="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"PUBLISHED")}>Publish</button>}
+              {a.status==="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"ARCHIVED")}>Archive</button>}
+            </div>
+          </div>)}
+          {!articles.length&&<div className="notice"><strong>No stories yet.</strong><p>Create the first verified story above.</p></div>}
+        </div>
+      </div>
     </div>
   </div>;
 }
