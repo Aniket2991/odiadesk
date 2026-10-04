@@ -1,8 +1,8 @@
 export type District = { name: string; slug: string; region: string };
 
 export const districts: District[] = [
-  ["Angul","angul","Central"],["Balangir","balangir","Western"],["Balasore","balasore","Northern"],["Bargarh","bargarh","Western"],
-  ["Bhadrak","bhadrak","Northern"],["Boudh","boudh","Central"],["Cuttack","cuttack","Coastal"],["Deogarh","deogarh","Western"],
+  ["Angul","angul","Central"],["Balangir","balangir","Western"],["Balasore","balasore","Coastal"],["Bargarh","bargarh","Western"],
+  ["Bhadrak","bhadrak","Coastal"],["Boudh","boudh","Central"],["Cuttack","cuttack","Coastal"],["Deogarh","deogarh","Western"],
   ["Dhenkanal","dhenkanal","Central"],["Gajapati","gajapati","Southern"],["Ganjam","ganjam","Southern"],["Jagatsinghpur","jagatsinghpur","Coastal"],
   ["Jajpur","jajpur","Coastal"],["Jharsuguda","jharsuguda","Western"],["Kalahandi","kalahandi","Western"],["Kandhamal","kandhamal","Southern"],
   ["Kendrapara","kendrapara","Coastal"],["Keonjhar","keonjhar","Northern"],["Khordha","khordha","Coastal"],["Koraput","koraput","Southern"],
