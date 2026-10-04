@@ -48,6 +48,9 @@ export async function POST(request: Request) {
   const url = new URL(sourceUrl);
   if (blockedHost(url.hostname)) return NextResponse.json({error: "This source host is not allowed."}, {status: 400});
 
+  const duplicate = await prisma.article.findFirst({where: {sourceUrl}});
+  if (duplicate) return NextResponse.json({error: "This source URL is already in the editorial queue."}, {status: 409});
+
   try {
     const response = await fetch(sourceUrl, {
       headers: {"user-agent": "OdiaDesk Editorial Fetcher/1.0"},
