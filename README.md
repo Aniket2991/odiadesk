@@ -2,37 +2,41 @@
 
 **Your Odisha. Your Local Desk.**
 
-OdiaDesk is a district-first local information platform for Odisha.
+OdiaDesk is a district-first Odisha information platform built with Next.js, TypeScript, Prisma and PostgreSQL.
 
-## Current status
+## Current platform
 
-- Next.js App Router + TypeScript
-- Mobile-first public homepage
-- 30 district routes
-- District search
-- News, jobs, events and local-information category routes
-- SEO metadata, sitemap and robots
-- Editorial/admin foundation
-- Health endpoint
+- All 30 Odisha districts configured in Prisma Postgres.
+- Verified-source article model with Draft → Review → Published → Archived workflow.
+- Public news feed and article pages read from published database records.
+- District pages automatically show published stories for that district.
+- Protected editorial dashboard at `/admin`.
+- Admin login at `/admin/login`.
+- Public news API exposes published stories only.
+- SEO metadata and NewsArticle structured data are included.
+- GitHub Actions build validation is configured.
 
-## Product direction
+## Environment
 
-OdiaDesk is intentionally **not** another generic statewide breaking-news clone. The core product is:
+Copy `.env.example` to `.env.local`.
 
-> What is happening near me, and what do I need to know?
+Required:
+- `DATABASE_URL`: Prisma Postgres connection string.
+- `ADMIN_KEY`: long private key used for the editorial login.
 
-Future modules:
-- PostgreSQL + Prisma content database
-- Authenticated editorial dashboard
-- News workflow: draft → review → publish
-- District/category tagging
-- Source + attribution fields
-- Search
-- Odia/English content
-- Official-source integrations
-- Jobs/events/business directory
-- Advertising and local sponsorships
+Never commit real environment values.
 
-## Content rule
+## Editorial rule
 
-Never publish fabricated news. Demo records must remain clearly identifiable as product/demo content until replaced by verified editorial material.
+OdiaDesk must not invent news. Every published story should have a real source URL and be editorially verified.
+
+AI may assist with summarisation, translation, categorisation and SEO, but it is not a source of facts.
+
+## Production roadmap
+
+1. Connect the GitHub repository to Vercel.
+2. Add `DATABASE_URL` and `ADMIN_KEY` as private Vercel environment variables.
+3. Verify the production build.
+4. Connect `odiadesk.com`.
+5. Add search, jobs, events, alerts, weather and local business modules.
+6. Add analytics and advertising only after the content platform is stable.
