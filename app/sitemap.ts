@@ -2,7 +2,14 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { districts } from "@/lib/districts";
 
+export const dynamic = "force-dynamic";
+
 const base = "https://odiadesk.com";
+
+function hasValidDatabaseUrl() {
+  const value = process.env.DATABASE_URL;
+  return Boolean(value && (value.startsWith("postgresql://") || value.startsWith("postgres://")));
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
@@ -23,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const articles = process.env.DATABASE_URL
+  const articles = hasValidDatabaseUrl()
     ? await prisma.article.findMany({
         where: { status: "PUBLISHED" },
         select: { slug: true, updatedAt: true, publishedAt: true },
