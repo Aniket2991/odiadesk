@@ -1,4 +1,13 @@
 import Link from "next/link";
-import { demoStories } from "@/lib/content";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { isValidAdminToken, ADMIN_COOKIE } from "@/lib/admin-auth";
+import AdminClient from "./AdminClient";
+
 export const metadata={title:"Admin — OdiaDesk"};
-export default function Admin(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Editorial workspace</small></span></Link><Link href="/" className="textLink">← Public site</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">EDITORIAL</span><h1>OdiaDesk <span>Admin</span></h1><p>Content workspace foundation. Authentication and database publishing will be connected before this is used for real editorial work.</p></div></section><section className="section"><div className="container"><div className="adminGrid"><div className="adminCard"><span className="adminIcon">📝</span><strong>Stories</strong><b>{demoStories.length}</b><small>Demo records currently in the development dataset.</small></div><div className="adminCard"><span className="adminIcon">📍</span><strong>Districts</strong><b>30</b><small>All Odisha districts are configured.</small></div><div className="adminCard"><span className="adminIcon">✓</span><strong>Publishing rule</strong><b>Verified</b><small>Real news requires a source and editorial verification.</small></div></div><div className="notice"><strong>Important: this route is not authenticated yet.</strong><p>Before launch, access will be protected with authentication and role-based publishing permissions. No public visitor can publish content from this page.</p></div></div></section></main>}
+
+export default async function Admin(){
+  const jar=await cookies();
+  if(!isValidAdminToken(jar.get(ADMIN_COOKIE)?.value)) redirect("/admin/login");
+  return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Editorial workspace</small></span></Link><Link href="/news" className="textLink">← Public news</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">EDITORIAL</span><h1>OdiaDesk <span>Admin</span></h1><p>Verified-source publishing desk. Draft, review, publish and archive stories without exposing the database to visitors.</p></div></section><section className="section"><div className="container"><AdminClient /></div></section></main>;
+}
