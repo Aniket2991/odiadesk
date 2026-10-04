@@ -1,0 +1,5 @@
+export type Story={id:string;title:string;excerpt:string;district:string;category:string;source:string;status:"draft"|"published";publishedAt?:string};
+export const demoStories:Story[]=[
+{id:"demo-1",title:"OdiaDesk local reporting desk is preparing for launch",excerpt:"This is a product update, not a news report. Live stories will be published only after editorial verification.",district:"Khordha",category:"OdiaDesk",source:"OdiaDesk",status:"published",publishedAt:"2026-10-04"},
+{id:"demo-2",title:"Every district gets a dedicated local information space",excerpt:"The platform is being organised around all 30 Odisha districts, with separate sections for news, jobs, events and civic information.",district:"All Odisha",category:"Platform",source:"OdiaDesk",status:"published",publishedAt:"2026-10-04"}
+];
