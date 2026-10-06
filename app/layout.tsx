@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://odiadesk.com"),
   title: { default: "OdiaDesk — Your Odisha. Your Local Desk.", template: "%s | OdiaDesk" },
   description: "OdiaDesk brings Odisha's local news, district updates, alerts, jobs, education, events and useful local information together.",
-  keywords: ["Odisha news","Odia news","local Odisha","district news Odisha","Odisha jobs","Odisha events","OdiaDesk"],
+  keywords: ["Odisha news", "Odia news", "local Odisha", "district news Odisha", "Odisha jobs", "Odisha events", "OdiaDesk"],
   alternates: { canonical: "https://odiadesk.com", types: { "application/rss+xml": "https://odiadesk.com/rss.xml" } },
   openGraph: {
     title: "OdiaDesk — Your Odisha. Your Local Desk.",
@@ -18,10 +18,25 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "NewsMediaOrganization",
+  name: "OdiaDesk",
+  url: "https://odiadesk.com",
+  description: "Local news and useful information for Odisha, organised around districts and communities.",
+  areaServed: { "@type": "State", name: "Odisha", addressCountry: "IN" },
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en-IN">
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
