@@ -5,12 +5,12 @@ import { districts } from "@/lib/districts";
 
 type Article={
   id:string; title:string; excerpt:string; content:string; status:string; category:string;
-  sourceName:string; sourceUrl:string; language:string; districtId?:string|null;
+  sourceName:string; sourceUrl:string; imageUrl?:string|null; language:string; districtId?:string|null;
   district?:{name:string}|null; createdAt:string
 };
 const categories=["Odisha","Districts","Politics","Crime","Business","Education","Jobs","Sports","Technology","Health","Culture","Alerts","Events","Traffic","Transport","Weather","Public Issues"];
 
-const emptyForm={title:"",excerpt:"",content:"",category:"Districts",sourceName:"",sourceUrl:"",districtSlug:"",language:"ENGLISH",status:"DRAFT"};
+const emptyForm={title:"",excerpt:"",content:"",category:"Districts",sourceName:"",sourceUrl:"",imageUrl:"",districtSlug:"",language:"ENGLISH",status:"DRAFT"};
 
 export default function AdminClient() {
   const [articles,setArticles]=useState<Article[]>([]);
@@ -36,7 +36,7 @@ export default function AdminClient() {
     setMessage("");
     setForm({
       title:a.title, excerpt:a.excerpt, content:a.content, category:a.category,
-      sourceName:a.sourceName, sourceUrl:a.sourceUrl, districtSlug,
+      sourceName:a.sourceName, sourceUrl:a.sourceUrl, imageUrl:a.imageUrl||"", districtSlug,
       language:a.language, status:a.status==="ARCHIVED"?"DRAFT":a.status
     });
     window.scrollTo({top:0,behavior:"smooth"});
@@ -118,6 +118,8 @@ export default function AdminClient() {
             <label>Source name<input value={form.sourceName} onChange={e=>set("sourceName",e.target.value)} required /></label>
             <label>Source URL<input type="url" value={form.sourceUrl} onChange={e=>set("sourceUrl",e.target.value)} placeholder="https://…" required /></label>
           </div>
+
+          <label>Article image URL <span style={{fontWeight:400,opacity:.65}}>(optional)</span><input type="url" value={form.imageUrl} onChange={e=>set("imageUrl",e.target.value)} placeholder="https://…/image.jpg" /></label>
 
           <div className="formTwo">
             <label>Language<select value={form.language} onChange={e=>set("language",e.target.value)}><option value="ENGLISH">English</option><option value="ODIA">Odia</option></select></label>
