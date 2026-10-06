@@ -1,24 +1,43 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { districts } from "@/lib/districts";
+import DistrictSearch from "@/app/components/DistrictSearch";
+
+export const dynamic = "force-dynamic";
 
 const categories = [
-  ["📰","Latest News","/news"],["🚨","Local Alerts","/alerts"],["💼","Jobs","/jobs"],["🎓","Education","/education"],
-  ["🏛️","Government","/government"],["🎉","Events","/events"],["☀️","Weather","/weather"],["🏪","Local Business","/business"],
+  ["📰", "Latest News", "/news"],
+  ["🚨", "Local Alerts", "/alerts"],
+  ["💼", "Jobs", "/jobs"],
+  ["🎓", "Education", "/education"],
+  ["🏛️", "Government", "/government"],
+  ["🎉", "Events", "/events"],
+  ["☀️", "Weather", "/weather"],
+  ["🏪", "Local Business", "/business"],
 ];
 
 const highlights = [
-  {tag:"ODISHA",title:"One place for the stories and information that matter locally.",text:"OdiaDesk is being built around districts, towns and everyday local needs — not just statewide headlines."},
-  {tag:"DISTRICTS",title:"Choose your district and get a local desk.",text:"Every Odisha district will have its own space for news, alerts, jobs, events, public issues and useful updates."},
-  {tag:"TRUST",title:"Useful first. Verified always.",text:"We will distinguish reported stories, official notices and community submissions so readers know what they are looking at."},
+  { tag: "ODISHA", title: "One place for the stories and information that matter locally.", text: "OdiaDesk is being built around districts, towns and everyday local needs — not just statewide headlines." },
+  { tag: "DISTRICTS", title: "Choose your district and get a local desk.", text: "Every Odisha district will have its own space for news, alerts, jobs, events, public issues and useful updates." },
+  { tag: "TRUST", title: "Useful first. Verified always.", text: "We will distinguish reported stories, official notices and community submissions so readers know what they are looking at." },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const articles = process.env.DATABASE_URL
+    ? await prisma.article.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+        take: 4,
+        include: { district: true },
+      })
+    : [];
+
   return (
     <main>
       <div className="topline"><div className="container topinner"><span>ଆପଣଙ୍କ ଓଡ଼ିଶା • ଆପଣଙ୍କ ଲୋକାଲ୍ ଡେସ୍କ</span><span>Independent local information platform</span></div></div>
       <header className="header"><div className="container nav">
         <Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link>
-        <nav className="navlinks">{["News","Jobs","Events","Business"].map((x)=><Link key={x} href={"/"+x.toLowerCase()}>{x}</Link>)}</nav>
+        <nav className="navlinks">{["News", "Jobs", "Events", "Business"].map((x) => <Link key={x} href={"/" + x.toLowerCase()}>{x}</Link>)}</nav>
         <Link href="/districts" className="districtButton">📍 Select District</Link>
       </div></header>
 
@@ -27,25 +46,31 @@ export default function Home() {
           <div className="eyebrow">ODIA DESK • ODISHA</div>
           <h1>What’s happening <span>near you?</span></h1>
           <p className="heroText">Local news, public updates, jobs, events and useful information — organised around the places you actually live.</p>
+          <DistrictSearch />
           <div className="heroActions"><Link href="/districts" className="primary">Explore a District →</Link><Link href="/news" className="secondary">Browse latest</Link></div>
           <div className="trustRow"><span>✓ District-first</span><span>✓ Mobile-first</span><span>✓ Built for Odisha</span></div>
         </div>
-        <div className="heroCard"><div className="heroCardTop"><span>LOCAL DESK</span><b>30 districts</b></div><div className="odishaMap">ଓଡ଼ିଶା</div><div className="mapCaption">A local desk for every district</div><div className="districtMini">{districts.slice(0,6).map(d=><Link href={"/district/"+d.slug} key={d.slug}>{d.name}</Link>)}</div></div>
+        <div className="heroCard"><div className="heroCardTop"><span>LOCAL DESK</span><b>30 districts</b></div><div className="odishaMap">ଓଡ଼ିଶା</div><div className="mapCaption">A local desk for every district</div><div className="districtMini">{districts.slice(0, 6).map((d) => <Link href={"/district/" + d.slug} key={d.slug}>{d.name}</Link>)}</div></div>
       </div></section>
+
+      {articles.length > 0 && <section className="section"><div className="container">
+        <div className="sectionHead"><div><span className="eyebrow">JUST PUBLISHED</span><h2>Latest from Odisha.</h2></div><Link href="/news" className="textLink">See all →</Link></div>
+        <div className="storyGrid">{articles.map((a) => <Link className="storyCard" href={"/news/" + a.slug} key={a.id}><span className="eyebrow">{a.category} · {a.district?.name || "Odisha"}</span><h2>{a.title}</h2><p>{a.excerpt}</p><small>{a.sourceName} · {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN") : "Recently"}</small></Link>)}</div>
+      </div></section>}
 
       <section className="section"><div className="container">
         <div className="sectionHead"><div><span className="eyebrow">EXPLORE</span><h2>Everything local, in one place.</h2></div><Link href="/news" className="textLink">See all →</Link></div>
-        <div className="categoryGrid">{categories.map(([icon,name,href])=><Link className="categoryCard" href={href} key={href}><span>{icon}</span><div><strong>{name}</strong><small>Explore local updates</small></div><b>→</b></Link>)}</div>
+        <div className="categoryGrid">{categories.map(([icon, name, href]) => <Link className="categoryCard" href={href} key={href}><span>{icon}</span><div><strong>{name}</strong><small>Explore local updates</small></div><b>→</b></Link>)}</div>
       </div></section>
 
       <section className="section soft"><div className="container">
         <div className="sectionHead"><div><span className="eyebrow">WHY ODIADESK</span><h2>Built differently from a breaking-news feed.</h2></div></div>
-        <div className="highlightGrid">{highlights.map((h,i)=><article className="highlight" key={h.tag}><span className="number">0{i+1}</span><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></article>)}</div>
+        <div className="highlightGrid">{highlights.map((h, i) => <article className="highlight" key={h.tag}><span className="number">0{i + 1}</span><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></article>)}</div>
       </div></section>
 
       <section className="section"><div className="container districtSection">
         <div className="sectionHead"><div><span className="eyebrow">YOUR DISTRICT</span><h2>Start with your place.</h2></div><Link href="/districts" className="textLink">View all 30 →</Link></div>
-        <div className="districtGrid">{districts.map(d=><Link href={"/district/"+d.slug} key={d.slug}>{d.name}<span>→</span></Link>)}</div>
+        <div className="districtGrid">{districts.map((d) => <Link href={"/district/" + d.slug} key={d.slug}>{d.name}<span>→</span></Link>)}</div>
       </div></section>
 
       <section className="cta"><div className="container ctaInner"><div><span className="eyebrow">ODIADESK</span><h2>Your Odisha. Your Local Desk.</h2><p>We’re building a better way to discover what matters close to home.</p></div><Link href="/about" className="primary light">How it works →</Link></div></section>
