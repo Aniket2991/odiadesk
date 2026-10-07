@@ -9,6 +9,16 @@ async function authorized() {
   return isValidAdminToken(jar.get(ADMIN_COOKIE)?.value);
 }
 
+function sameOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).host === new URL(request.url).host;
+  } catch {
+    return false;
+  }
+}
+
 function blockedHost(hostname: string) {
   const h = hostname.toLowerCase();
   return h === "localhost" || h === "::1" || h.endsWith(".local") ||
@@ -41,6 +51,7 @@ function slugify(value: string) {
 
 export async function POST(request: Request) {
   if (!await authorized()) return NextResponse.json({error: "Unauthorized"}, {status: 401});
+  if (!sameOrigin(request)) return NextResponse.json({error: "Invalid request origin"}, {status: 403});
   const body = await request.json().catch(() => ({}));
   const sourceUrl = typeof body.sourceUrl === "string" ? body.sourceUrl.trim() : "";
   if (!isSafeHttpUrl(sourceUrl)) return NextResponse.json({error: "Enter a valid HTTP(S) source URL."}, {status: 400});
@@ -64,6 +75,8 @@ export async function POST(request: Request) {
     const html = (await response.text()).slice(0, 800000);
     const title = meta(html, "og:title") || meta(html, "twitter:title") || htmlTitle(html);
     const description = meta(html, "og:description") || meta(html, "description") || meta(html, "twitter:description");
+    const imageCandidate = meta(html, "og:image") || meta(html, "twitter:image");
+    const imageUrl = imageCandidate && isSafeHttpUrl(imageCandidate) ? imageCandidate : null;
     if (!title) return NextResponse.json({error: "Could not detect a headline. Create the draft manually."}, {status: 400});
 
     let slug = slugify(title) || "imported-story";
@@ -81,7 +94,8 @@ export async function POST(request: Request) {
         sourceUrl,
         language: body.language === "ODIA" ? "ODIA" : "ENGLISH",
         status: "DRAFT",
-        districtId: null
+        districtId: null,
+        imageUrl
       },
       include: {district: true}
     });
