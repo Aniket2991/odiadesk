@@ -9,6 +9,16 @@ async function authorized() {
   return isValidAdminToken(jar.get(ADMIN_COOKIE)?.value);
 }
 
+function sameOrigin(request: Request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).host === new URL(request.url).host;
+  } catch {
+    return false;
+  }
+}
+
 function slugify(value:string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,90);
 }
@@ -22,6 +32,7 @@ function uniqueSlug(base:string, currentId?:string) {
 
 export async function GET() {
   if (!await authorized()) return NextResponse.json({error:"Unauthorized"},{status:401});
+  if (!sameOrigin(request)) return NextResponse.json({error:"Invalid request origin"},{status:403});
   if (!process.env.DATABASE_URL) return NextResponse.json({error:"DATABASE_URL is not configured"},{status:503});
   const articles = await prisma.article.findMany({orderBy:{createdAt:"desc"},take:100,include:{district:true}});
   return NextResponse.json({ok:true,articles});
@@ -57,6 +68,7 @@ export async function POST(request:Request) {
 
 export async function PATCH(request:Request) {
   if (!await authorized()) return NextResponse.json({error:"Unauthorized"},{status:401});
+  if (!sameOrigin(request)) return NextResponse.json({error:"Invalid request origin"},{status:403});
   if (!process.env.DATABASE_URL) return NextResponse.json({error:"DATABASE_URL is not configured"},{status:503});
   const body = await request.json().catch(()=>({}));
   if (typeof body.id!=="string") return NextResponse.json({error:"id is required"},{status:400});
