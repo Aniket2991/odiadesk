@@ -37,7 +37,7 @@ export default async function Home() {
       <div className="topline"><div className="container topinner"><span>ଆପଣଙ୍କ ଓଡ଼ିଶା • ଆପଣଙ୍କ ଲୋକାଲ୍ ଡେସ୍କ</span><span>Independent local information platform</span></div></div>
       <header className="header"><div className="container nav">
         <Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link>
-        <nav className="navlinks">{["News", "Jobs", "Events", "Business"].map((x) => <Link key={x} href={"/" + x.toLowerCase()}>{x}</Link>)}</nav>
+        <nav className="navlinks">{["News", "Jobs", "Events", "Business"].map((x) => <Link key={x} href={"/" + x.toLowerCase()}>{x}</Link>)}<Link href="/search">Search</Link></nav>
         <Link href="/districts" className="districtButton">📍 Select District</Link>
       </div></header>
 
