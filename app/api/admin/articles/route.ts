@@ -84,6 +84,13 @@ export async function PATCH(request:Request) {
     if (validationError) return NextResponse.json({error:validationError},{status:400});
   }
 
+  if ("imageUrl" in body) {
+    if (body.imageUrl !== null && (typeof body.imageUrl !== "string" || (body.imageUrl.trim() && !isSafeHttpUrl(body.imageUrl.trim())))) {
+      return NextResponse.json({error:"imageUrl must be a valid HTTP(S) URL"},{status:400});
+    }
+    data.imageUrl = typeof body.imageUrl === "string" && body.imageUrl.trim() ? body.imageUrl.trim() : null;
+  }
+
   if ("language" in body) data.language = body.language==="ODIA" ? "ODIA" : "ENGLISH";
 
   if ("districtSlug" in body) {
