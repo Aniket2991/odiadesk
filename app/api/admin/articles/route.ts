@@ -32,7 +32,6 @@ function uniqueSlug(base:string, currentId?:string) {
 
 export async function GET() {
   if (!await authorized()) return NextResponse.json({error:"Unauthorized"},{status:401});
-  if (!sameOrigin(request)) return NextResponse.json({error:"Invalid request origin"},{status:403});
   if (!process.env.DATABASE_URL) return NextResponse.json({error:"DATABASE_URL is not configured"},{status:503});
   const articles = await prisma.article.findMany({orderBy:{createdAt:"desc"},take:100,include:{district:true}});
   return NextResponse.json({ok:true,articles});
