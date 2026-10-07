@@ -8,6 +8,14 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
 export default async function DistrictPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params; const district=districts.find(d=>d.slug===slug); if(!district)notFound();
  const dbDistrict=process.env.DATABASE_URL ? await prisma.district.findUnique({where:{slug},include:{articles:{where:{status:"PUBLISHED"},orderBy:{publishedAt:"desc"},take:8}}}) : null;
+ const districtJsonLd={
+   "@context":"https://schema.org",
+   "@type":"CollectionPage",
+   name: district.name+" Local Desk",
+   description:"Verified local news, alerts, jobs, events and useful information for "+district.name+", Odisha.",
+   url:"https://odiadesk.com/district/"+district.slug,
+   isPartOf:{ "@type":"WebSite", name:"OdiaDesk", url:"https://odiadesk.com" },
+ };
  const modules: [string, string, string][]=[["🚨","Local Alerts","Important public updates and alerts."],["💼","Jobs","Local opportunities and recruitment updates."],["🎓","Education","Schools, colleges, exams and education notices."],["🏛️","Government","Official notices, schemes and public services."],["🎉","Events","What’s happening around "+district.name+"."],["🚍","Transport","Road, rail and local mobility updates."],["🏪","Business","Useful local businesses and services."]];
  return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header>
  <section className="districtHero"><div className="container"><span className="eyebrow">{district.region.toUpperCase()} ODISHA • LOCAL DESK</span><h1>{district.name}<span> Desk</span></h1><p>One place for the local information that matters to people in {district.name}.</p><div className="districtPills"><span>📍 {district.name}, Odisha</span><span>30-district network</span></div></div></section>
