@@ -54,6 +54,22 @@ export default async function ArticlePage({
 
   if (!a) notFound();
 
+  const related = process.env.DATABASE_URL
+    ? await prisma.article.findMany({
+        where: {
+          status: "PUBLISHED",
+          id: { not: a.id },
+          OR: [
+            { category: a.category },
+            ...(a.districtId ? [{ districtId: a.districtId }] : []),
+          ],
+        },
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+        take: 4,
+        include: { district: true },
+      })
+    : [];
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
@@ -154,6 +170,28 @@ export default async function ArticlePage({
                 <p key={i}>{p}</p>
               ))}
           </div>
+
+          {related.length > 0 && (
+            <section className="section" style={{ padding: "28px 0 0" }}>
+              <div className="sectionHead">
+                <div>
+                  <span className="eyebrow">KEEP READING</span>
+                  <h2>More local stories</h2>
+                </div>
+              </div>
+              <div className="storyGrid">
+                {related.map((story) => (
+                  <Link className="storyCard" href={"/news/" + story.slug} key={story.id}>
+                    <span className="eyebrow">
+                      {story.category} · {story.district?.name || "Odisha"}
+                    </span>
+                    <h2>{story.title}</h2>
+                    <p>{story.excerpt}</p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           <div className="notice">
             <strong>Source</strong>
