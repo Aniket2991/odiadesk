@@ -115,6 +115,30 @@ export default async function ArticlePage({
 
           <p className="articleLead">{a.excerpt}</p>
 
+          <div className="shareBar" aria-label="Share this story">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(a.title + " — https://odiadesk.com/news/" + a.slug)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              WhatsApp
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://odiadesk.com/news/" + a.slug)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Facebook
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(a.title)}&url=${encodeURIComponent("https://odiadesk.com/news/" + a.slug)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              X
+            </a>
+          </div>
+
           <div className="articleMeta">
             Published{" "}
             {a.publishedAt
