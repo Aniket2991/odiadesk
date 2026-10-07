@@ -20,13 +20,12 @@ enum Language {
 }
 
 model District {
-  id        String     @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
-  slug      String     @unique
+  slug      String    @unique
   region    String?
   articles  Article[]
-  businesses Business[]
-  createdAt DateTime   @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
@@ -51,26 +50,4 @@ model Article {
   @@index([status, publishedAt])
   @@index([districtId, status])
   @@index([category, status])
-}
-
-model Business {
-  id          String    @id @default(cuid())
-  name        String
-  slug        String    @unique
-  category    String
-  description String
-  town        String?
-  address     String?
-  phone       String?
-  websiteUrl  String?
-  imageUrl    String?
-  verified    Boolean   @default(false)
-  districtId  String?
-  district    District? @relation(fields: [districtId], references: [id], onDelete: SetNull)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([districtId])
-  @@index([category])
-  @@index([verified])
 }
