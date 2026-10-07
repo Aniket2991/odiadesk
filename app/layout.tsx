@@ -16,6 +16,8 @@ export const metadata: Metadata = {
     type: "website",
   },
   robots: { index: true, follow: true },
+  icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
+  manifest: "/manifest.webmanifest",
 };
 
 const structuredData = {
