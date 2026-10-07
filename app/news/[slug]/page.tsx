@@ -61,8 +61,17 @@ export default async function ArticlePage({
     description: a.excerpt,
     datePublished: a.publishedAt?.toISOString(),
     dateModified: a.updatedAt.toISOString(),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://odiadesk.com/news/${a.slug}`,
+    },
     author: { "@type": "Organization", name: "OdiaDesk" },
-    publisher: { "@type": "Organization", name: "OdiaDesk" },
+    publisher: {
+      "@type": "Organization",
+      name: "OdiaDesk",
+      url: "https://odiadesk.com",
+      logo: { "@type": "ImageObject", url: "https://odiadesk.com/icon.svg" },
+    },
     ...(a.imageUrl ? { image: [a.imageUrl] } : {}),
   };
 
