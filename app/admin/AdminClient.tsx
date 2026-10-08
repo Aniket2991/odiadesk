@@ -18,8 +18,6 @@ export default function AdminClient() {
   const [importMessage,setImportMessage]=useState("");
   const [busy,setBusy]=useState(false);
   const [importBusy,setImportBusy]=useState(false);
-  const [collectBusy,setCollectBusy]=useState(false);
-  const [collectMessage,setCollectMessage]=useState("");
   const [sourceUrl,setSourceUrl]=useState("");
   const [editing,setEditing]=useState<Article|null>(null);
   const [form,setForm]=useState(emptyForm);
@@ -60,15 +58,6 @@ export default function AdminClient() {
     setBusy(false);
   }
 
-  async function collectSources(){
-    setCollectBusy(true);setCollectMessage("");
-    const r=await fetch("/api/admin/collect",{method:"POST"});
-    const d=await r.json();
-    if(!r.ok)setCollectMessage(d.error||"Could not collect sources.");
-    else {setCollectMessage(`Collected ${d.created?.length||0} new drafts.`);load();}
-    setCollectBusy(false);
-  }
-
   async function importDraft(e:FormEvent){
     e.preventDefault();setImportBusy(true);setImportMessage("");
     const r=await fetch("/api/admin/ingest",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({sourceUrl})});
@@ -105,11 +94,7 @@ export default function AdminClient() {
           <form onSubmit={importDraft}>
             <label>Source URL<input type="url" value={sourceUrl} onChange={e=>setSourceUrl(e.target.value)} placeholder="https://…" required /></label>
             {importMessage&&<p className="formMessage">{importMessage}</p>}
-            <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-              <button className="secondary" disabled={importBusy}>{importBusy?"Importing…":"Import as draft"}</button>
-              <button type="button" className="secondary" disabled={collectBusy} onClick={collectSources}>{collectBusy?"Collecting…":"Collect latest sources"}</button>
-            </div>
-            {collectMessage&&<p className="formMessage">{collectMessage}</p>}
+            <button className="secondary" disabled={importBusy}>{importBusy?"Importing…":"Import as draft"}</button>
           </form>
         </div>
 
