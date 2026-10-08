@@ -23,6 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
           description: a.excerpt,
           url: "/news/" + a.slug,
           type: "article" as const,
+          section: a.category,
+          publishedTime: a.publishedAt?.toISOString(),
+          modifiedTime: a.updatedAt.toISOString(),
           ...(a.imageUrl ? { images: [a.imageUrl] } : {}),
         },
         ...(a.imageUrl
