@@ -78,6 +78,11 @@ export async function PATCH(request:Request) {
   if (!existing) return NextResponse.json({error:"Article not found"},{status:404});
 
   const data: Record<string, unknown> = {};
+  const editorialFields=["title","excerpt","content","category","sourceName","sourceUrl","imageUrl","language","districtSlug"];
+  const editorialChange=editorialFields.some((key)=>key in body);
+  if ((body.status==="PUBLISHED" || (existing.status==="PUBLISHED" && editorialChange)) && body.reviewConfirmed!==true) {
+    return NextResponse.json({error:"Editorial review must be completed before publishing or changing a published story."},{status:400});
+  }
 
   for (const key of ["title","excerpt","content","category","sourceName","sourceUrl"]) {
     if (key in body) {
@@ -119,7 +124,6 @@ export async function PATCH(request:Request) {
   }
 
   if ("status" in body) {
-    if (body.status==="PUBLISHED" && existing.status!=="PUBLISHED" && body.reviewConfirmed!==true) return NextResponse.json({error:"Editorial review must be completed before publishing."},{status:400});
     if (typeof body.status!=="string" || !["DRAFT","REVIEW","PUBLISHED","ARCHIVED"].includes(body.status)) {
       return NextResponse.json({error:"Invalid status"},{status:400});
     }
