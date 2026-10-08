@@ -63,11 +63,32 @@ export async function POST(request: Request) {
   if (duplicate) return NextResponse.json({error: "This source URL is already in the editorial queue."}, {status: 409});
 
   try {
-    const response = await fetch(sourceUrl, {
-      headers: {"user-agent": "OdiaDesk Editorial Fetcher/1.0"},
-      signal: AbortSignal.timeout(8000),
-      redirect: "manual"
-    });
+    let fetchUrl = sourceUrl;
+    let response: Response | null = null;
+
+    for (let redirectCount = 0; redirectCount < 4; redirectCount++) {
+      response = await fetch(fetchUrl, {
+        headers: {"user-agent": "OdiaDesk Editorial Fetcher/1.0"},
+        signal: AbortSignal.timeout(8000),
+        redirect: "manual"
+      });
+
+      if (![301, 302, 303, 307, 308].includes(response.status)) break;
+
+      const location = response.headers.get("location");
+      if (!location) return NextResponse.json({error: "Source returned a redirect without a destination."}, {status: 400});
+
+      const nextUrl = new URL(location, fetchUrl);
+      if (!isSafeHttpUrl(nextUrl.toString()) || blockedHost(nextUrl.hostname)) {
+        return NextResponse.json({error: "The source redirected to a blocked or unsafe destination."}, {status: 400});
+      }
+      fetchUrl = nextUrl.toString();
+    }
+
+    if (!response) return NextResponse.json({error: "Could not fetch that source."}, {status: 400});
+    if ([301, 302, 303, 307, 308].includes(response.status)) {
+      return NextResponse.json({error: "Too many source redirects. Open the source manually and create the draft."}, {status: 400});
+    }
     if (!response.ok) return NextResponse.json({error: `Source returned HTTP ${response.status}. Open it manually and create the draft.`}, {status: 400});
     const type = response.headers.get("content-type") || "";
     if (!type.includes("text/html")) return NextResponse.json({error: "This importer currently accepts HTML article pages only."}, {status: 400});
