@@ -75,7 +75,7 @@ export default async function Home() {
 
       <section className="cta"><div className="container ctaInner"><div><span className="eyebrow">ODIADESK</span><h2>Your Odisha. Your Local Desk.</h2><p>We’re building a better way to discover what matters close to home.</p></div><Link href="/about" className="primary light">How it works →</Link></div></section>
 
-      <footer className="footer"><div className="container footerGrid"><div><Link href="/" className="footerBrand">OdiaDesk</Link><p>Local information for Odisha, organised around people and places.</p></div><div><strong>Explore</strong><Link href="/news">News</Link><Link href="/jobs">Jobs</Link><Link href="/events">Events</Link></div><div><strong>About</strong><Link href="/about">About us</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div></div><div className="container copyright">© 2026 OdiaDesk. Built for Odisha.</div></footer>
+      <footer className="footer"><div className="container footerGrid"><div><Link href="/" className="footerBrand">OdiaDesk</Link><p>Local information for Odisha, organised around people and places.</p></div><div><strong>Explore</strong><Link href="/news">News</Link><Link href="/jobs">Jobs</Link><Link href="/events">Events</Link></div><div><strong>About</strong><Link href="/about">About us</Link><Link href="/editorial-policy">Editorial policy</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div></div><div className="container copyright">© 2026 OdiaDesk. Built for Odisha.</div></footer>
     </main>
   );
 }
