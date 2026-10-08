@@ -2,6 +2,10 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+function cdata(value: string | null | undefined) {
+  return `<![CDATA[${String(value ?? "").replaceAll("]]>", "]]]]><![CDATA[>")}]]>`;
+}
+
 export async function GET() {
   const articles = process.env.DATABASE_URL
     ? await prisma.article.findMany({
@@ -12,12 +16,12 @@ export async function GET() {
       })
     : [];
 
-  const items = articles.map(a => `<item>
-<title><![CDATA[${a.title}]]></title>
-<link>https://odiadesk.com/news/${a.slug}</link>
-<guid isPermaLink="true">https://odiadesk.com/news/${a.slug}</guid>
-<description><![CDATA[${a.excerpt}]]></description>
-<source url="https://odiadesk.com">${a.sourceName || "OdiaDesk"}</source>
+  const items = articles.map((a) => `<item>
+<title>${cdata(a.title)}</title>
+<link>https://odiadesk.com/news/${encodeURIComponent(a.slug)}</link>
+<guid isPermaLink="true">https://odiadesk.com/news/${encodeURIComponent(a.slug)}</guid>
+<description>${cdata(a.excerpt)}</description>
+<source url="https://odiadesk.com">${cdata(a.sourceName || "OdiaDesk")}</source>
 ${a.publishedAt ? `<pubDate>${a.publishedAt.toUTCString()}</pubDate>` : ""}
 </item>`).join("");
 
@@ -27,12 +31,15 @@ ${a.publishedAt ? `<pubDate>${a.publishedAt.toUTCString()}</pubDate>` : ""}
 <title>OdiaDesk — Odisha Local News</title>
 <link>https://odiadesk.com</link>
 <description>Verified local and district news from Odisha.</description>
-<link>https://odiadesk.com/rss.xml</link>
+<atom:link xmlns:atom="http://www.w3.org/2005/Atom" href="https://odiadesk.com/rss.xml" rel="self" type="application/rss+xml"/>
 ${items}
 </channel>
 </rss>`;
 
   return new Response(xml, {
-    headers: { "Content-Type": "application/rss+xml; charset=utf-8", "Cache-Control": "s-maxage=300, stale-while-revalidate=600" },
+    headers: {
+      "Content-Type": "application/rss+xml; charset=utf-8",
+      "Cache-Control": "s-maxage=300, stale-while-revalidate=600",
+    },
   });
 }
