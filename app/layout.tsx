@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     siteName: "OdiaDesk",
     locale: "en_IN",
     type: "website",
+    images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: "OdiaDesk — Your Odisha. Your Local Desk." }],
   },
   robots: { index: true, follow: true },
   icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
