@@ -173,7 +173,7 @@ export default function AdminClient() {
 
           <div className="formTwo">
             <label>Language<select value={form.language} onChange={e=>set("language",e.target.value)}><option value="ENGLISH">English</option><option value="ODIA">Odia</option></select></label>
-            <label>Save as<select value={form.status} onChange={e=>set("status",e.target.value)}><option>DRAFT</option><option>REVIEW</option><option>PUBLISHED</option></select></label>
+            <label>Save as<select value={form.status} onChange={e=>set("status",e.target.value)}><option>DRAFT</option><option>REVIEW</option></select></label>
           </div>
 
           {message&&<p className="formMessage">{message}</p>}
