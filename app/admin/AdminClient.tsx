@@ -27,6 +27,11 @@ export default function AdminClient() {
   const [form,setForm]=useState(emptyForm);
   const [review,setReview]=useState({source:false,facts:false,district:false,image:false,original:false});
   const reviewReady=Object.values(review).every(Boolean);
+  const counts={all:articles.length,draft:articles.filter(a=>a.status==="DRAFT").length,review:articles.filter(a=>a.status==="REVIEW").length,published:articles.filter(a=>a.status==="PUBLISHED").length,archived:articles.filter(a=>a.status==="ARCHIVED").length};
+  const [queueFilter,setQueueFilter]=useState("ALL");
+  const [queueCategory,setQueueCategory]=useState("ALL");
+  const [queueDistrict,setQueueDistrict]=useState("ALL");
+  const filteredArticles=articles.filter(a=>(queueFilter==="ALL"||a.status===queueFilter)&&(queueCategory==="ALL"||a.category===queueCategory)&&(queueDistrict==="ALL"||(a.district?.name||"All Odisha")===queueDistrict));
 
   async function load(){
     const r=await fetch("/api/admin/articles");
@@ -185,9 +190,16 @@ export default function AdminClient() {
       </div>
 
       <div>
-        <div className="formHeader"><span className="eyebrow">CONTENT QUEUE</span><h2>Recent stories</h2></div>
+        <div className="formHeader"><span className="eyebrow">CONTENT QUEUE</span><h2>Editorial overview</h2></div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(5,minmax(0,1fr))",gap:8,marginBottom:16}}>
+          {([["ALL","All",counts.all],["DRAFT","Drafts",counts.draft],["REVIEW","Review",counts.review],["PUBLISHED","Published",counts.published],["ARCHIVED","Archived",counts.archived]] as [string,string,number][]).map(([key,label,count])=><button type="button" key={key} className={queueFilter===key?"primary":"secondary"} onClick={()=>setQueueFilter(key)} style={{padding:"10px 8px"}}><strong>{count}</strong><small style={{display:"block"}}>{label}</small></button>)}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
+          <select value={queueCategory} onChange={e=>setQueueCategory(e.target.value)}><option value="ALL">All categories</option>{categories.map(x=><option key={x} value={x}>{x}</option>)}</select>
+          <select value={queueDistrict} onChange={e=>setQueueDistrict(e.target.value)}><option value="ALL">All districts</option>{districts.map(d=><option key={d.name} value={d.name}>{d.name}</option>)}</select>
+        </div>
         <div className="articleQueue">
-          {articles.map(a=><div className="queueItem" key={a.id}>
+          {filteredArticles.map(a=><div className="queueItem" key={a.id}>
             <div>
               <strong>{a.title}</strong>
               <small>{a.category} · {a.district?.name||"All Odisha"} · {a.status}</small>
@@ -198,7 +210,7 @@ export default function AdminClient() {
               {a.status==="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"ARCHIVED")}>Archive</button>}
             </div>
           </div>)}
-          {!articles.length&&<div className="notice"><strong>No stories yet.</strong><p>Create the first verified story above.</p></div>}
+          {!articles.length&&<div className="notice"><strong>No stories yet.</strong><p>Create the first verified story above.</p></div>}{articles.length>0&&!filteredArticles.length&&<div className="notice"><strong>No matching stories.</strong><p>Try another status, category or district filter.</p></div>}
         </div>
       </div>
     </div>
