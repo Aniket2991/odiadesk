@@ -61,7 +61,7 @@ export async function POST(request:Request) {
     slug,title:String(body.title).trim(),excerpt:String(body.excerpt).trim(),content:String(body.content).trim(),
     category:String(body.category),sourceName:String(body.sourceName).trim(),sourceUrl,
     language:body.language==="ODIA"?"ODIA":"ENGLISH",status,
-    districtId:district?.id ?? null,publishedAt:status==="PUBLISHED"?new Date():null,
+    districtId:district?.id ?? null,publishedAt:null,
     imageUrl:typeof body.imageUrl==="string"&&body.imageUrl?body.imageUrl:null
   },include:{district:true}});
   return NextResponse.json({ok:true,article},{status:201});
