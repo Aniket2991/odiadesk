@@ -85,7 +85,7 @@ async function getFeed(query: string): Promise<FeedItem[]> {
     description: field(block, "description"),
     sourceName: field(block, "source"),
     pubDate: field(block, "pubDate"),
-  })).filter((item) => Boolean(item.title && item.link));
+  })).filter((item) => Boolean(item.title && item.link)).sort((a,b) => new Date(b.pubDate || 0).getTime() - new Date(a.pubDate || 0).getTime());
 }
 
 async function finalUrl(url: string): Promise<string> {
@@ -104,12 +104,20 @@ export async function collectNews() {
   const created: Array<{ id: string; title: string; sourceUrl: string }> = [];
   const errors: string[] = [];
 
+  const seenTitles = new Set<string>();
+  const cutoff = Date.now() - 72 * 60 * 60 * 1000;
   for (const feed of FEEDS) {
     if (created.length >= 15) break;
     try {
       const items = await getFeed(feed.query);
+      let feedCreated = 0;
       for (const item of items) {
-        if (created.length >= 15) break;
+        if (created.length >= 15 || feedCreated >= 4) break;
+        const publishedMs = Date.parse(item.pubDate);
+        if (Number.isFinite(publishedMs) && publishedMs < cutoff) continue;
+        const normalizedTitle = item.title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+        if (!normalizedTitle || seenTitles.has(normalizedTitle)) continue;
+        seenTitles.add(normalizedTitle);
 
         const sourceUrl = await finalUrl(item.link);
         const duplicate = await prisma.article.findFirst({
@@ -143,6 +151,7 @@ export async function collectNews() {
           select: { id: true, title: true, sourceUrl: true },
         });
         created.push(article);
+        feedCreated += 1;
       }
     } catch (error) {
       errors.push(feed.query + ": " + (error instanceof Error ? error.message : "collection failed"));
