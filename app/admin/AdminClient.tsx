@@ -25,7 +25,8 @@ export default function AdminClient() {
   const [sourceUrl,setSourceUrl]=useState("");
   const [editing,setEditing]=useState<Article|null>(null);
   const [form,setForm]=useState(emptyForm);
-  const [reviewReady,setReviewReady]=useState(false);
+  const [review,setReview]=useState({source:false,facts:false,district:false,image:false,original:false});
+  const reviewReady=Object.values(review).every(Boolean);
 
   async function load(){
     const r=await fetch("/api/admin/articles");
@@ -39,6 +40,7 @@ export default function AdminClient() {
     const districtSlug=districts.find(d=>d.name===a.district?.name)?.slug || "";
     setEditing(a);
     setMessage("");
+    setReview({source:false,facts:false,district:false,image:false,original:false});
     setForm({
       title:a.title, excerpt:a.excerpt, content:a.content, category:a.category,
       sourceName:a.sourceName, sourceUrl:a.sourceUrl, imageUrl:a.imageUrl||"", districtSlug,
@@ -47,7 +49,7 @@ export default function AdminClient() {
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
-  function cancelEdit(){setEditing(null);setForm(emptyForm);setMessage("")}
+  function cancelEdit(){setEditing(null);setForm(emptyForm);setMessage("");setReview({source:false,facts:false,district:false,image:false,original:false})}
 
   async function aiAssist(){
     setAiBusy(true);setAiMessage("");
@@ -59,7 +61,9 @@ export default function AdminClient() {
   }
 
   async function submit(e:FormEvent){
-    e.preventDefault();setBusy(true);setMessage("");
+    e.preventDefault();
+    if(editing&&form.status==="PUBLISHED"&&!reviewReady){setMessage("Complete every editorial review check before publishing.");return;}
+    setBusy(true);setMessage("");
     const method=editing?"PATCH":"POST";
     const payload=editing?{id:editing.id,...form}:form;
     const r=await fetch("/api/admin/articles",{method,headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
@@ -135,6 +139,21 @@ export default function AdminClient() {
           <label>Headline<input value={form.title} onChange={e=>set("title",e.target.value)} required /></label>
           <label>Excerpt<textarea value={form.excerpt} onChange={e=>set("excerpt",e.target.value)} required /></label>
           <label>Story content<textarea className="largeInput" value={form.content} onChange={e=>set("content",e.target.value)} required /></label>
+          {editing&&<div style={{margin:"8px 0 16px",padding:16,border:"1px solid rgba(23,60,45,.14)",borderRadius:16,background:"rgba(23,60,45,.035)"}}>
+            <div style={{fontWeight:800,marginBottom:8}}>Editorial review checklist</div>
+            <div style={{display:"grid",gap:8}}>
+              {([
+                ["source","Source is opened and verified"],
+                ["facts","Names, dates, numbers and claims are fact-checked"],
+                ["district","District/category are correct"],
+                ["image","Image rights/source are verified or image is removed"],
+                ["original","Copy is original and not copied from the source"]
+              ] as [keyof typeof review,string][]).map(([key,label])=><label key={key} style={{display:"flex",gap:8,alignItems:"flex-start",fontWeight:500}}>
+                <input type="checkbox" checked={review[key]} onChange={e=>setReview(x=>({...x,[key]:e.target.checked}))} style={{marginTop:4}} />{label}
+              </label>)}
+            </div>
+            <p style={{margin:"10px 0 0",fontSize:13,opacity:.7}}>{reviewReady?"✓ Ready to publish":"Complete all checks before publishing."}</p>
+          </div>}
           {editing&&<div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",margin:"8px 0 16px"}}>
             <button type="button" className="secondary" disabled={aiBusy} onClick={aiAssist}>{aiBusy?"Preparing…":"✨ AI editorial assist"}</button>
             {aiMessage&&<span className="formMessage">{aiMessage}</span>}
@@ -159,7 +178,7 @@ export default function AdminClient() {
 
           {message&&<p className="formMessage">{message}</p>}
           <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-            <button className="primary" disabled={busy}>{busy?(editing?"Saving…":"Creating…"):(editing?"Save changes":"Save article")}</button>
+            <button className="primary" disabled={busy||(editing&&form.status==="PUBLISHED"&&!reviewReady)}>{busy?(editing?"Saving…":"Creating…"):(editing&&form.status==="PUBLISHED"?"Approve & Publish":editing?"Save changes":"Save article")}</button>
             {editing&&<button type="button" className="secondary" onClick={cancelEdit}>Cancel</button>}
           </div>
         </form>
