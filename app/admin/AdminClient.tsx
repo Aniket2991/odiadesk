@@ -8,7 +8,7 @@ type Article={
   sourceName:string; sourceUrl:string; imageUrl?:string|null; language:string; districtId?:string|null;
   district?:{name:string}|null; createdAt:string
 };
-const categories=["Odisha","Districts","Politics","Crime","Business","Education","Jobs","Sports","Technology","Health","Culture","Alerts","Events","Traffic","Transport","Weather","Public Issues"];
+const categories=["Odisha","Districts","Government","Politics","Crime","Business","Education","Jobs","Sports","Technology","Health","Culture","Alerts","Events","Traffic","Transport","Weather","Public Issues"];
 
 const emptyForm={title:"",excerpt:"",content:"",category:"Districts",sourceName:"",sourceUrl:"",imageUrl:"",districtSlug:"",language:"ENGLISH",status:"DRAFT"};
 
