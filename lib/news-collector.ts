@@ -52,8 +52,8 @@ async function feedItems(query: string) {
   const response = await fetch(url, { headers: { "user-agent": "OdiaDesk Source Collector/1.0" }, signal: AbortSignal.timeout(7000), cache: "no-store" });
   if (!response.ok) throw new Error(`Feed returned HTTP ${response.status}`);
   const xml = await response.text();
-  return [...xml.matchAll(/<item>([\\s\\S]*?)<\\/item>/gi)].map(m => {
-    const block = m[1];
+  return xml.split(/<item>/i).slice(1).map(chunk => {
+    const block = chunk.split(/<\\/item>/i)[0];
     return { title: tag(block, "title"), link: tag(block, "link"), description: tag(block, "description").replace(/<[^>]+>/g, " ").replace(/\\s+/g, " ").trim(), sourceName: tag(block, "source"), sourceUrl: attr(block, "url"), pubDate: tag(block, "pubDate") };
   }).filter(item => item.title && item.link);
 }
