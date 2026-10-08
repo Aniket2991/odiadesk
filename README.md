@@ -18,6 +18,10 @@ OdiaDesk is a district-first Odisha information platform built with Next.js, Typ
 - Readiness endpoint at `/api/ready` checks database connectivity.
 - SEO metadata, RSS, sitemap, robots rules and NewsArticle structured data are included.
 - GitHub Actions build validation is configured.
+- Automated source collection creates review drafts from public RSS discovery.
+- Manual source collection is available from the editorial dashboard.
+- Vercel Cron is configured for one daily collection run.
+- Collected stories are never auto-published.
 
 ## Environment
 
@@ -26,8 +30,24 @@ Copy `.env.example` to `.env.local`.
 Required:
 - `DATABASE_URL`: Prisma Postgres connection string.
 - `ADMIN_KEY`: long private key used for the editorial login.
+- `CRON_SECRET`: private bearer secret used by the scheduled source collector.
 
 Never commit real environment values.
+
+## Automated content collection
+
+The first automation layer is intentionally review-first:
+
+1. Public RSS discovery runs daily through Vercel Cron.
+2. New items are checked against existing source URLs and titles.
+3. The collector attempts to resolve the publisher URL.
+4. District and category are inferred when the headline contains a clear match.
+5. A DRAFT is created in the admin queue.
+6. An editor must verify the source, write original OdiaDesk copy, and publish manually.
+
+The collector does not copy full source articles and does not auto-publish news.
+
+The scheduled endpoint requires `CRON_SECRET` in Vercel Production environment variables.
 
 ## Editorial rule
 
