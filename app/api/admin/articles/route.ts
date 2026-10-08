@@ -117,6 +117,7 @@ export async function PATCH(request:Request) {
   }
 
   if ("status" in body) {
+    if (body.status==="PUBLISHED" && existing.status!=="PUBLISHED" && body.reviewConfirmed!==true) return NextResponse.json({error:"Editorial review must be completed before publishing."},{status:400});
     if (typeof body.status!=="string" || !["DRAFT","REVIEW","PUBLISHED","ARCHIVED"].includes(body.status)) {
       return NextResponse.json({error:"Invalid status"},{status:400});
     }
