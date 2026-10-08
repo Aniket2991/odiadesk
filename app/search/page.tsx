@@ -3,6 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Search Odisha News",
+  description: "Search published OdiaDesk stories by topic, district and category.",
+};
+
 type SearchPageProps = { searchParams: Promise<{ q?: string }> };
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
