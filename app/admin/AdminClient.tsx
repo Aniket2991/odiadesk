@@ -65,7 +65,7 @@ export default function AdminClient() {
     if(editing&&form.status==="PUBLISHED"&&!reviewReady){setMessage("Complete every editorial review check before publishing.");return;}
     setBusy(true);setMessage("");
     const method=editing?"PATCH":"POST";
-    const payload=editing?{id:editing.id,...form}:form;
+    const payload=editing?{id:editing.id,...form,reviewConfirmed:form.status==="PUBLISHED"&&reviewReady}:form;
     const r=await fetch("/api/admin/articles",{method,headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
     const d=await r.json();
     if(!r.ok)setMessage(d.error||"Could not save article.");
@@ -194,7 +194,7 @@ export default function AdminClient() {
             </div>
             <div className="queueActions">
               <button onClick={()=>startEdit(a)}>Edit</button>
-              {a.status!=="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"PUBLISHED")}>Publish</button>}
+              {a.status!=="PUBLISHED"&&<button onClick={()=>startEdit(a)}>Review</button>}
               {a.status==="PUBLISHED"&&<button onClick={()=>changeStatus(a.id,"ARCHIVED")}>Archive</button>}
             </div>
           </div>)}
