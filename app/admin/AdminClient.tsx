@@ -25,6 +25,7 @@ export default function AdminClient() {
   const [sourceUrl,setSourceUrl]=useState("");
   const [editing,setEditing]=useState<Article|null>(null);
   const [form,setForm]=useState(emptyForm);
+  const [reviewReady,setReviewReady]=useState(false);
 
   async function load(){
     const r=await fetch("/api/admin/articles");
