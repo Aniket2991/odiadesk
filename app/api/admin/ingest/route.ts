@@ -109,7 +109,7 @@ export async function POST(request: Request) {
         slug,
         title,
         excerpt: description || "Imported source draft — verify and rewrite before publishing.",
-        content: "EDITORIAL NOTE\n\nThis is a source-assisted draft. Review the original source, verify the facts, write original OdiaDesk copy, and replace this note before publishing. Do not republish the source article verbatim unless you have the necessary rights.\n\nSource: " + sourceUrl,
+        content: "EDITORIAL NOTE\n\nThis is a source-assisted draft. Review the original source, verify the facts, write original OdiaDesk copy, and replace this note before publishing. Do not republish the source article verbatim unless you have the necessary rights.\n\nSource: " + sourceUrl + "\nFetched: " + new Date().toISOString(),
         category: typeof body.category === "string" && body.category ? body.category : "Odisha",
         sourceName: typeof body.sourceName === "string" && body.sourceName ? body.sourceName : url.hostname,
         sourceUrl,
