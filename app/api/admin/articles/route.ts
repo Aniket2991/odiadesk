@@ -39,6 +39,7 @@ export async function GET() {
 
 export async function POST(request:Request) {
   if (!await authorized()) return NextResponse.json({error:"Unauthorized"},{status:401});
+  if (!sameOrigin(request)) return NextResponse.json({error:"Invalid request origin"},{status:403});
   if (!process.env.DATABASE_URL) return NextResponse.json({error:"DATABASE_URL is not configured"},{status:503});
   const body = await request.json().catch(()=>({}));
   const error = validateArticle(body);
@@ -54,6 +55,7 @@ export async function POST(request:Request) {
   const baseSlug = slugify(String(body.slug||body.title)) || "story";
   const slug = await uniqueSlug(baseSlug);
   const status = body.status==="REVIEW" ? "REVIEW" : body.status==="PUBLISHED" ? "PUBLISHED" : "DRAFT";
+  if (status==="PUBLISHED") return NextResponse.json({error:"New articles must be reviewed before publishing. Save as REVIEW, then use Approve & Publish after completing the checklist."},{status:400});
 
   const article = await prisma.article.create({data:{
     slug,title:String(body.title).trim(),excerpt:String(body.excerpt).trim(),content:String(body.content).trim(),
