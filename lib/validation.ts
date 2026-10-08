@@ -1,4 +1,4 @@
-export const ARTICLE_CATEGORIES=["Odisha","Districts","Politics","Crime","Business","Education","Jobs","Sports","Technology","Health","Culture","Alerts","Events","Traffic","Transport","Weather","Public Issues"] as const;
+export const ARTICLE_CATEGORIES=["Odisha","Districts","Government","Politics","Crime","Business","Education","Jobs","Sports","Technology","Health","Culture","Alerts","Events","Traffic","Transport","Weather","Public Issues"] as const;
 
 export function isSafeHttpUrl(value:string){
   try{
