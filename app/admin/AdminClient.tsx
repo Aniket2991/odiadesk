@@ -20,6 +20,8 @@ export default function AdminClient() {
   const [importBusy,setImportBusy]=useState(false);
   const [collectBusy,setCollectBusy]=useState(false);
   const [collectMessage,setCollectMessage]=useState("");
+  const [aiBusy,setAiBusy]=useState(false);
+  const [aiMessage,setAiMessage]=useState("");
   const [sourceUrl,setSourceUrl]=useState("");
   const [editing,setEditing]=useState<Article|null>(null);
   const [form,setForm]=useState(emptyForm);
@@ -45,6 +47,15 @@ export default function AdminClient() {
   }
 
   function cancelEdit(){setEditing(null);setForm(emptyForm);setMessage("")}
+
+  async function aiAssist(){
+    setAiBusy(true);setAiMessage("");
+    const r=await fetch("/api/admin/ai-editor",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(form)});
+    const d=await r.json();
+    if(!r.ok)setAiMessage(d.error||"AI editorial assist failed.");
+    else {setForm(x=>({...x,title:d.result.headline,excerpt:d.result.excerpt,content:d.result.content,language:d.result.language}));setAiMessage("AI draft prepared. Verify every fact and source before saving or publishing.");}
+    setAiBusy(false);
+  }
 
   async function submit(e:FormEvent){
     e.preventDefault();setBusy(true);setMessage("");
@@ -123,6 +134,10 @@ export default function AdminClient() {
           <label>Headline<input value={form.title} onChange={e=>set("title",e.target.value)} required /></label>
           <label>Excerpt<textarea value={form.excerpt} onChange={e=>set("excerpt",e.target.value)} required /></label>
           <label>Story content<textarea className="largeInput" value={form.content} onChange={e=>set("content",e.target.value)} required /></label>
+          {editing&&<div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",margin:"8px 0 16px"}}>
+            <button type="button" className="secondary" disabled={aiBusy} onClick={aiAssist}>{aiBusy?"Preparing…":"✨ AI editorial assist"}</button>
+            {aiMessage&&<span className="formMessage">{aiMessage}</span>}
+          </div>}
 
           <div className="formTwo">
             <label>Category<select value={form.category} onChange={e=>set("category",e.target.value)}>{categories.map(x=><option key={x}>{x}</option>)}</select></label>
