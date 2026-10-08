@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<rect width="1200" height="630" fill="#f6f1e8"/>
+<circle cx="1040" cy="100" r="210" fill="#e8c46a" opacity=".28"/>
+<circle cx="120" cy="560" r="260" fill="#173c2d" opacity=".08"/>
+<rect x="72" y="72" width="1056" height="486" rx="34" fill="#fff" stroke="#e4dacb" stroke-width="3"/>
+<circle cx="170" cy="180" r="48" fill="#e36b2c"/>
+<text x="170" y="198" text-anchor="middle" font-family="Arial,sans-serif" font-size="52" font-weight="700" fill="#fff">O</text>
+<text x="245" y="178" font-family="Arial,sans-serif" font-size="58" font-weight="700" fill="#173c2d">OdiaDesk</text>
+<text x="245" y="220" font-family="Arial,sans-serif" font-size="23" fill="#6b6258">Your Odisha. Your Local Desk.</text>
+<text x="120" y="340" font-family="Arial,sans-serif" font-size="52" font-weight="700" fill="#173c2d">Local news.</text>
+<text x="120" y="405" font-family="Arial,sans-serif" font-size="52" font-weight="700" fill="#173c2d">Useful information.</text>
+<text x="120" y="470" font-family="Arial,sans-serif" font-size="27" fill="#6b6258">District-first updates from across Odisha</text>
+</svg>
