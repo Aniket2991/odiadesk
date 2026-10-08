@@ -178,7 +178,7 @@ export default function AdminClient() {
 
           {message&&<p className="formMessage">{message}</p>}
           <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-            <button className="primary" disabled={busy||(editing&&form.status==="PUBLISHED"&&!reviewReady)}>{busy?(editing?"Saving…":"Creating…"):(editing&&form.status==="PUBLISHED"?"Approve & Publish":editing?"Save changes":"Save article")}</button>
+            <button className="primary" disabled={busy||Boolean(editing&&form.status==="PUBLISHED"&&!reviewReady)}>{busy?(editing?"Saving…":"Creating…"):(editing&&form.status==="PUBLISHED"?"Approve & Publish":editing?"Save changes":"Save article")}</button>
             {editing&&<button type="button" className="secondary" onClick={cancelEdit}>Cancel</button>}
           </div>
         </form>
