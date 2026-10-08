@@ -47,12 +47,26 @@ function categoryFor(title: string, fallback: string): string {
   if (/rain|weather|cyclone|storm|imd|flood|heatwave/.test(text)) return "Weather";
   if (/police|crime|arrest|murder|accident|theft/.test(text)) return "Crime";
   if (/business|industry|investment|company|market/.test(text)) return "Business";
+  if (/government|minister|ministry|odisha govt|notification|official notice|scheme|collector|secretariat/.test(text)) return "Government";
+  if (/politics|election|bjp|congress|bjd|mla|mp|assembly/.test(text)) return "Politics";
+  if (/hospital|health|disease|doctor|medical/.test(text)) return "Health";
+  if (/technology|tech|digital|cyber/.test(text)) return "Technology";
+  if (/sport|cricket|football|hockey/.test(text)) return "Sports";
   return fallback;
 }
 
 function districtSlugFor(title: string): string {
   const lower = title.toLowerCase();
-  return districts.find((district) => lower.includes(district.name.toLowerCase()))?.slug ?? "";
+  const direct = districts.find((district) => lower.includes(district.name.toLowerCase()));
+  if (direct) return direct.slug;
+  const cityDistricts: Record<string,string> = {
+    bhubaneswar:"khordha",cuttack:"cuttack",rourkela:"sundargarh",berhampur:"ganjam",
+    sambalpur:"sambalpur",balasore:"balasore",baleswar:"balasore",puri:"puri",
+    baripada:"mayurbhanj",jharsuguda:"jharsuguda",angul:"angul",koraput:"koraput",
+    bhadrak:"bhadrak",kendrapara:"kendrapara",jajpur:"jajpur",dhenkanal:"dhenkanal"
+  };
+  const match = Object.entries(cityDistricts).find(([city]) => lower.includes(city));
+  return match?.[1] ?? "";
 }
 
 async function getFeed(query: string): Promise<FeedItem[]> {
