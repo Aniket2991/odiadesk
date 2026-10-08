@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   robots: { index: true, follow: true },
+  other: { "google-adsense-account": "ca-pub-REPLACE_WITH_ADSENSE_ID" },
   icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
   manifest: "/manifest.webmanifest",
 };
