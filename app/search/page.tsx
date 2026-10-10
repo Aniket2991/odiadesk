@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { cleanHtmlText } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +55,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             {articles.length ? <div className="storyGrid">
               {articles.map(a => <Link className="storyCard" href={"/news/" + a.slug} key={a.id}>
                 <span className="eyebrow">{a.category} · {a.district?.name || "Odisha"}</span>
-                <h2>{a.title}</h2><p>{a.excerpt}</p>
+                <h2>{a.title}</h2><p>{cleanHtmlText(a.excerpt)}</p>
                 <small>{a.sourceName} · {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN") : "Recently"}</small>
               </Link>)}
             </div> : <div className="notice"><strong>No matching published stories.</strong><p>Try a district name, topic or a shorter search.</p></div>}
