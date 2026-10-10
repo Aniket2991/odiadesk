@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { districts } from "@/lib/districts";
+import { cleanHtmlText } from "@/lib/text";
 
 type FeedItem = {
   title: string;
@@ -18,17 +19,7 @@ const FEEDS = [
 ];
 
 function clean(value: string): string {
-  return value
-    .replace(/<!\[CDATA\[/g, "")
-    .replace(/\]\]>/g, "")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/\s+/g, " ")
-    .trim();
+  return cleanHtmlText(value);
 }
 
 function field(block: string, name: string): string {
