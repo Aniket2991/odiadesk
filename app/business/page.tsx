@@ -1,41 +1,11 @@
-import Link from "next/link";
+import CategoryPage from "@/app/components/CategoryPage";
 
+export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Local Business — OdiaDesk",
-  description: "Discover useful local businesses and services across Odisha.",
+  description: "Local business news and verified business updates across Odisha.",
 };
 
 export default function Business() {
-  return (
-    <main>
-      <header className="header">
-        <div className="container nav">
-          <Link href="/" className="brand">
-            <span className="brandmark">O</span>
-            <span>
-              <strong>Odia</strong>Desk
-              <small>Your Odisha. Your Local Desk.</small>
-            </span>
-          </Link>
-          <Link href="/" className="textLink">← Home</Link>
-        </div>
-      </header>
-      <section className="pageHero">
-        <div className="container">
-          <span className="eyebrow">ODIA DESK • LOCAL BUSINESS</span>
-          <h1>Local <span>Business</span></h1>
-          <p>Useful shops, services and local businesses organised by district and town.</p>
-        </div>
-      </section>
-      <section className="section">
-        <div className="container">
-          <div className="notice">
-            <strong>Local business directory is coming.</strong>
-            <p>Businesses will be added with useful details and clear sponsored/organic labels.</p>
-            <Link href="/district/khordha" className="primary inlineButton">Explore a district</Link>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+  return <CategoryPage eyebrow="ODIA DESK • LOCAL BUSINESS" heading="Local" accent="Business" description="Local business news, industry updates and business opportunities published after source review." categories={["Business"]} />;
 }
