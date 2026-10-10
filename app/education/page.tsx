@@ -1,3 +1,8 @@
-import Link from "next/link";
-export const metadata={title:"Education — OdiaDesk",description:"Education updates, notices, exams and opportunities across Odisha."};
-export default function Education(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">ODIA DESK • EDUCATION</span><h1>Education <span>Updates</span></h1><p>Exam notices, admissions, scholarships, school and college updates organised for Odisha.</p></div></section><section className="section"><div className="container"><div className="notice"><strong>Education desk is being prepared.</strong><p>We will publish verified notices and opportunities with their original sources.</p><Link href="/jobs" className="primary inlineButton">View jobs</Link></div></div></section></main>}
+import CategoryPage from "@/app/components/CategoryPage";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Education — OdiaDesk", description: "Verified education notices, exams and opportunities across Odisha." };
+
+export default function Education() {
+  return <CategoryPage eyebrow="ODIA DESK • EDUCATION" heading="Education" accent="Updates" description="Exam notices, admissions, scholarships and school or college updates with links to original sources." categories={["Education"]} />;
+}
