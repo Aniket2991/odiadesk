@@ -51,7 +51,7 @@ export default async function ArticlePage({
   const { slug } = await params;
   const a = process.env.DATABASE_URL
     ? await prisma.article.findFirst({
-        where: { slug, status: "PUBLISHED" },
+        where: { slug, status: "PUBLISHED", NOT: { content: { startsWith: "EDITORIAL NOTE" } } },
         include: { district: true },
       })
     : null;
