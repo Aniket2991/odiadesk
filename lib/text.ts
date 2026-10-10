@@ -6,7 +6,7 @@ function decodeCodePoint(value: string, radix: number): string {
 
 /** Converts source/feed HTML and encoded markup into readable plain text. */
 export function cleanHtmlText(value: string | null | undefined): string {
-  let text = String(value ?? "").replace(/<!\\[CDATA\\[/g, "").replace(/\\]\\]>/g, "");
+  let text = String(value ?? "").replace(/<!\[CDATA\[/g, "").replace(/\]\]>/g, "");
   for (let pass = 0; pass < 2; pass += 1) {
     text = text
       .replace(/&#x([0-9a-f]+);/gi, (_match, code: string) => decodeCodePoint(code, 16))
@@ -20,10 +20,10 @@ export function cleanHtmlText(value: string | null | undefined): string {
       .replace(/&gt;/gi, ">");
   }
   return text
-    .replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, " ")
-    .replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, " ")
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]*>/g, " ")
-    .replace(/[\\u0000-\\u001f\\u007f]/g, " ")
-    .replace(/\\s+/g, " ")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
