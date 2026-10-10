@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "*", allow: "/" },
       { userAgent: "*", disallow: ["/admin", "/api/"] },
     ],
-    sitemap: "https://odiadesk.com/sitemap.xml",
+    sitemap: "https://odiadesk.vercel.app/sitemap.xml",
   };
 }
