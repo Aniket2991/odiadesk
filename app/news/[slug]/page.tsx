@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { cleanHtmlText } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -132,7 +133,7 @@ export default async function ArticlePage({
             />
           )}
 
-          <p className="articleLead">{a.excerpt}</p>
+          <p className="articleLead">{cleanHtmlText(a.excerpt)}</p>
 
           <div className="shareBar" aria-label="Share this story">
             <a
@@ -170,7 +171,7 @@ export default async function ArticlePage({
             {a.content
               .split(/\n+/)
               .map((p: string, i: number) => (
-                <p key={i}>{p}</p>
+                <p key={i}>{cleanHtmlText(p)}</p>
               ))}
           </div>
 
