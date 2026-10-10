@@ -4,7 +4,7 @@ import { districts } from "@/lib/districts";
 
 export const dynamic = "force-dynamic";
 
-const base = "https://odiadesk.com";
+const base = "https://odiadesk.vercel.app";
 
 function hasValidDatabaseUrl() {
   const value = process.env.DATABASE_URL;
