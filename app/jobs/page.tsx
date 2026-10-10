@@ -1,1 +1,8 @@
-import Link from "next/link"; export const metadata={title:"Odisha Jobs"}; export default function Jobs(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">CAREER DESK</span><h1>Odisha <span>Jobs</span></h1><p>Government recruitment, private openings, apprenticeships and district-level opportunities — organised in one place.</p></div></section><section className="section"><div className="container"><div className="notice"><strong>Jobs desk coming next</strong><p>Listings will be linked to their original official or employer source and will include location, deadline and source.</p></div></div></section></main>}
+import CategoryPage from "@/app/components/CategoryPage";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Odisha Jobs — OdiaDesk", description: "Verified recruitment notices and job updates across Odisha." };
+
+export default function Jobs() {
+  return <CategoryPage eyebrow="CAREER DESK" heading="Odisha" accent="Jobs" description="Recruitment notices, apprenticeships and local opportunities. Check each story's original source and deadline before applying." categories={["Jobs"]} />;
+}
