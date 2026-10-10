@@ -1,3 +1,8 @@
-import Link from "next/link";
-export const metadata={title:"Local Alerts — OdiaDesk",description:"Verified public alerts and local updates from Odisha."};
-export default function Alerts(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">ODIA DESK • LOCAL ALERTS</span><h1>Local <span>Alerts</span></h1><p>Verified public notices, transport disruptions, weather warnings and important local updates.</p></div></section><section className="section"><div className="container"><div className="notice"><strong>Alert desk is ready.</strong><p>Only verified information from reliable sources will be published here.</p><Link href="/news" className="primary inlineButton">Browse verified news</Link></div></div></section></main>}
+import CategoryPage from "@/app/components/CategoryPage";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Local Alerts — OdiaDesk", description: "Verified public alerts and local updates from Odisha." };
+
+export default function Alerts() {
+  return <CategoryPage eyebrow="ODIA DESK • LOCAL ALERTS" heading="Local" accent="Alerts" description="Verified public notices, transport disruptions, weather warnings and important local updates." categories={["Alerts", "Traffic", "Transport", "Weather", "Public Issues"]} />;
+}
