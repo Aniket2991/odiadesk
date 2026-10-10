@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { districts } from "@/lib/districts";
 import DistrictSearch from "@/app/components/DistrictSearch";
+import { cleanHtmlText } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +56,7 @@ export default async function Home() {
 
       {articles.length > 0 && <section className="section"><div className="container">
         <div className="sectionHead"><div><span className="eyebrow">JUST PUBLISHED</span><h2>Latest from Odisha.</h2></div><Link href="/news" className="textLink">See all →</Link></div>
-        <div className="storyGrid">{articles.map((a) => <Link className="storyCard" href={"/news/" + a.slug} key={a.id}><span className="eyebrow">{a.category} · {a.district?.name || "Odisha"}</span><h2>{a.title}</h2><p>{a.excerpt}</p><small>{a.sourceName} · {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN") : "Recently"}</small></Link>)}</div>
+        <div className="storyGrid">{articles.map((a) => <Link className="storyCard" href={"/news/" + a.slug} key={a.id}><span className="eyebrow">{a.category} · {a.district?.name || "Odisha"}</span><h2>{a.title}</h2><p>{cleanHtmlText(a.excerpt)}</p><small>{a.sourceName} · {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN") : "Recently"}</small></Link>)}</div>
       </div></section>}
 
       <section className="section"><div className="container">
