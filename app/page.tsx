@@ -26,7 +26,7 @@ const highlights = [
 export default async function Home() {
   const articles = process.env.DATABASE_URL
     ? await prisma.article.findMany({
-        where: { status: "PUBLISHED" },
+        where: { status: "PUBLISHED", NOT: { content: { startsWith: "EDITORIAL NOTE" } } },
         orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
         take: 4,
         include: { district: true },

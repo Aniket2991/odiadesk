@@ -12,10 +12,10 @@ function cdata(value: string | null | undefined) {
 export async function GET() {
   const articles = process.env.DATABASE_URL
     ? await prisma.article.findMany({
-        where: { status: "PUBLISHED" },
+        where: { status: "PUBLISHED", NOT: { content: { startsWith: "EDITORIAL NOTE" } } },
         orderBy: { publishedAt: "desc" },
         take: 50,
-        select: { slug: true, title: true, excerpt: true, sourceName: true, publishedAt: true },
+        select: { slug: true, title: true, excerpt: true, sourceName: true, publishedAt: true, content: true },
       })
     : [];
 

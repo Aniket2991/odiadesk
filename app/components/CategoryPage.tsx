@@ -19,7 +19,7 @@ export default async function CategoryPage({
 }: CategoryPageProps) {
   const articles = process.env.DATABASE_URL
     ? await prisma.article.findMany({
-        where: { status: "PUBLISHED", category: { in: categories } },
+        where: { status: "PUBLISHED", NOT: { content: { startsWith: "EDITORIAL NOTE" } }, category: { in: categories } },
         orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
         take: 50,
         include: { district: true },

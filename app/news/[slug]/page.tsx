@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const a = process.env.DATABASE_URL
     ? await prisma.article.findFirst({
-        where: { slug, status: "PUBLISHED" },
+        where: { slug, status: "PUBLISHED", NOT: { content: { startsWith: "EDITORIAL NOTE" } } },
         include: { district: true },
       })
     : null;
@@ -62,6 +62,7 @@ export default async function ArticlePage({
     ? await prisma.article.findMany({
         where: {
           status: "PUBLISHED",
+          NOT: { content: { startsWith: "EDITORIAL NOTE" } },
           id: { not: a.id },
           OR: [
             { category: a.category },
@@ -83,14 +84,14 @@ export default async function ArticlePage({
     dateModified: a.updatedAt.toISOString(),
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://odiadesk.com/news/${a.slug}`,
+      "@id": `https://odiadesk.vercel.app/news/${a.slug}`,
     },
     author: { "@type": "Organization", name: "OdiaDesk" },
     publisher: {
       "@type": "Organization",
       name: "OdiaDesk",
-      url: "https://odiadesk.com",
-      logo: { "@type": "ImageObject", url: "https://odiadesk.com/icon.svg" },
+      url: "https://odiadesk.vercel.app",
+      logo: { "@type": "ImageObject", url: "https://odiadesk.vercel.app/icon.svg" },
     },
     ...(a.imageUrl ? { image: [a.imageUrl] } : {}),
   };
@@ -137,21 +138,21 @@ export default async function ArticlePage({
 
           <div className="shareBar" aria-label="Share this story">
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(a.title + " — https://odiadesk.com/news/" + a.slug)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(a.title + " — https://odiadesk.vercel.app/news/" + a.slug)}`}
               target="_blank"
               rel="noreferrer"
             >
               WhatsApp
             </a>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://odiadesk.com/news/" + a.slug)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent("https://odiadesk.vercel.app/news/" + a.slug)}`}
               target="_blank"
               rel="noreferrer"
             >
               Facebook
             </a>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(a.title)}&url=${encodeURIComponent("https://odiadesk.com/news/" + a.slug)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(a.title)}&url=${encodeURIComponent("https://odiadesk.vercel.app/news/" + a.slug)}`}
               target="_blank"
               rel="noreferrer"
             >

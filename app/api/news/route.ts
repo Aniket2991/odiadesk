@@ -20,6 +20,7 @@ export async function GET(request: Request) {
     const items = await prisma.article.findMany({
       where: {
         status: "PUBLISHED",
+        NOT: { content: { startsWith: "EDITORIAL NOTE" } },
         ...(district ? { district: { slug: district } } : {}),
         ...(category ? { category } : {}),
       },

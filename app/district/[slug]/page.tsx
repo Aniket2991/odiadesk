@@ -8,14 +8,14 @@ export function generateStaticParams(){return districts.map(d=>({slug:d.slug}));
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const d=districts.find(x=>x.slug===slug);return d?{title:d.name+" Local Desk",description:"Verified local news, alerts, jobs, events and useful information for "+d.name+", Odisha."}:{};}
 export default async function DistrictPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params; const district=districts.find(d=>d.slug===slug); if(!district)notFound();
- const dbDistrict=process.env.DATABASE_URL ? await prisma.district.findUnique({where:{slug},include:{articles:{where:{status:"PUBLISHED"},orderBy:{publishedAt:"desc"},take:8}}}) : null;
+ const dbDistrict=process.env.DATABASE_URL ? await prisma.district.findUnique({where:{slug},include:{articles:{where:{status:"PUBLISHED",NOT:{content:{startsWith:"EDITORIAL NOTE"}}},orderBy:{publishedAt:"desc"},take:8}}}) : null;
  const districtJsonLd={
    "@context":"https://schema.org",
    "@type":"CollectionPage",
    name: district.name+" Local Desk",
    description:"Verified local news, alerts, jobs, events and useful information for "+district.name+", Odisha.",
-   url:"https://odiadesk.com/district/"+district.slug,
-   isPartOf:{ "@type":"WebSite", name:"OdiaDesk", url:"https://odiadesk.com" },
+   url:"https://odiadesk.vercel.app/district/"+district.slug,
+   isPartOf:{ "@type":"WebSite", name:"OdiaDesk", url:"https://odiadesk.vercel.app" },
  };
  const modules: [string, string, string, string][]=[["🚨","Local Alerts","Important public updates and alerts.","/alerts"],["💼","Jobs","Local opportunities and recruitment updates.","/jobs"],["🎓","Education","Schools, colleges, exams and education notices.","/education"],["🏛️","Government","Official notices, schemes and public services.","/government"],["🎉","Events","What’s happening around "+district.name+".","/events"],["🚍","Transport","Road, rail and local mobility updates.","/news"],["🏪","Business","Useful local businesses and services.","/business"]];
  return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header>
