@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://odiadesk.com"),
+  metadataBase: new URL("https://odiadesk.vercel.app"),
   title: { default: "OdiaDesk — Your Odisha. Your Local Desk.", template: "%s | OdiaDesk" },
   description: "OdiaDesk brings Odisha's local news, district updates, alerts, jobs, education, events and useful local information together.",
   keywords: ["Odisha news", "Odia news", "local Odisha", "district news Odisha", "Odisha jobs", "Odisha events", "OdiaDesk"],
-  alternates: { canonical: "https://odiadesk.com", types: { "application/rss+xml": "https://odiadesk.com/rss.xml" } },
+  alternates: { canonical: "https://odiadesk.vercel.app", types: { "application/rss+xml": "https://odiadesk.vercel.app/rss.xml" } },
   openGraph: {
     title: "OdiaDesk — Your Odisha. Your Local Desk.",
     description: "Local news and useful information for every corner of Odisha.",
-    url: "https://odiadesk.com",
+    url: "https://odiadesk.vercel.app",
     siteName: "OdiaDesk",
     locale: "en_IN",
     type: "website",
@@ -25,7 +25,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "NewsMediaOrganization",
   name: "OdiaDesk",
-  url: "https://odiadesk.com",
+  url: "https://odiadesk.vercel.app",
   description: "Local news and useful information for Odisha, organised around districts and communities.",
   areaServed: { "@type": "State", name: "Odisha", addressCountry: "IN" },
 };
