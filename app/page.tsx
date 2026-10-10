@@ -18,9 +18,9 @@ const categories = [
 ];
 
 const highlights = [
-  { tag: "ODISHA", title: "One place for the stories and information that matter locally.", text: "OdiaDesk is being built around districts, towns and everyday local needs — not just statewide headlines." },
-  { tag: "DISTRICTS", title: "Choose your district and get a local desk.", text: "Every Odisha district will have its own space for news, alerts, jobs, events, public issues and useful updates." },
-  { tag: "TRUST", title: "Useful first. Verified always.", text: "We will distinguish reported stories, official notices and community submissions so readers know what they are looking at." },
+  { tag: "ODISHA", title: "One place for the stories and information that matter locally.", text: "OdiaDesk organizes news and useful information around districts, towns and everyday local needs — not just statewide headlines." },
+  { tag: "DISTRICTS", title: "Choose your district and get a local desk.", text: "Each of Odisha’s 30 districts has its own desk for news, alerts, jobs, events, public issues and useful updates." },
+  { tag: "TRUST", title: "Useful first. Verified always.", text: "Stories are published after editorial review, with source links so readers can check the original information." },
 ];
 
 export default async function Home() {
@@ -74,7 +74,7 @@ export default async function Home() {
         <div className="districtGrid">{districts.map((d) => <Link href={"/district/" + d.slug} key={d.slug}>{d.name}<span>→</span></Link>)}</div>
       </div></section>
 
-      <section className="cta"><div className="container ctaInner"><div><span className="eyebrow">ODIADESK</span><h2>Your Odisha. Your Local Desk.</h2><p>We’re building a better way to discover what matters close to home.</p></div><Link href="/about" className="primary light">How it works →</Link></div></section>
+      <section className="cta"><div className="container ctaInner"><div><span className="eyebrow">ODIADESK</span><h2>Your Odisha. Your Local Desk.</h2><p>Discover the stories and updates that matter close to home.</p></div><Link href="/about" className="primary light">How it works →</Link></div></section>
 
       <footer className="footer"><div className="container footerGrid"><div><Link href="/" className="footerBrand">OdiaDesk</Link><p>Local information for Odisha, organised around people and places.</p></div><div><strong>Explore</strong><Link href="/news">News</Link><Link href="/jobs">Jobs</Link><Link href="/events">Events</Link></div><div><strong>About</strong><Link href="/about">About us</Link><Link href="/editorial-policy">Editorial policy</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div></div><div className="container copyright">© 2026 OdiaDesk. Built for Odisha.</div></footer>
     </main>
