@@ -34,7 +34,10 @@ export async function GET() {
   if (!await authorized()) return NextResponse.json({error:"Unauthorized"},{status:401});
   if (!process.env.DATABASE_URL) return NextResponse.json({error:"DATABASE_URL is not configured"},{status:503});
   const articles = await prisma.article.findMany({orderBy:{createdAt:"desc"},take:100,include:{district:true}});
-  return NextResponse.json({ok:true,articles});
+  return NextResponse.json(
+    {ok:true,articles},
+    {headers:{"Cache-Control":"private, no-store, max-age=0","Pragma":"no-cache"}}
+  );
 }
 
 export async function POST(request:Request) {
