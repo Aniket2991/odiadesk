@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { cleanHtmlText } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export async function GET() {
 <title>${cdata(a.title)}</title>
 <link>https://odiadesk.com/news/${encodeURIComponent(a.slug)}</link>
 <guid isPermaLink="true">https://odiadesk.com/news/${encodeURIComponent(a.slug)}</guid>
-<description>${cdata(a.excerpt)}</description>
+<description>${cdata(cleanHtmlText(a.excerpt))}</description>
 <source url="https://odiadesk.com">${cdata(a.sourceName || "OdiaDesk")}</source>
 ${a.publishedAt ? `<pubDate>${a.publishedAt.toUTCString()}</pubDate>` : ""}
 </item>`).join("");
