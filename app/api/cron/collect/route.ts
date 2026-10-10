@@ -5,11 +5,19 @@ export const dynamic = "force-dynamic";
 
 function authorized(request: Request) {
   const secret = process.env.CRON_SECRET;
-  return Boolean(secret && request.headers.get("authorization") === `Bearer ${secret}`);
+  const authorization = request.headers.get("authorization");
+  const userAgent = request.headers.get("user-agent") || "";
+  return Boolean(
+    secret &&
+    authorization === `Bearer ${secret}` &&
+    userAgent.toLowerCase().includes("vercel-cron")
+  );
 }
 
 export async function GET(request: Request) {
-  if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!authorized(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     return NextResponse.json({ ok: true, ...(await collectNews()) });
   } catch {
