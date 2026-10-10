@@ -1,1 +1,8 @@
-import Link from "next/link"; export const metadata={title:"Odisha Events"}; export default function Events(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">LOCAL CALENDAR</span><h1>Events across <span>Odisha</span></h1><p>Festivals, public events, exhibitions, sports and community activities, organised by district.</p></div></section><section className="section"><div className="container"><div className="notice"><strong>Events desk coming next</strong><p>Event listings will be sourced from organisers and official/public sources, with dates and locations clearly shown.</p></div></div></section></main>}
+import CategoryPage from "@/app/components/CategoryPage";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Odisha Events — OdiaDesk", description: "Verified events and community updates across Odisha." };
+
+export default function Events() {
+  return <CategoryPage eyebrow="LOCAL CALENDAR" heading="Events across" accent="Odisha" description="Community activities, festivals, exhibitions and public events published after source review." categories={["Events"]} />;
+}
