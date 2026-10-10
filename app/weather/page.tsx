@@ -1,3 +1,8 @@
-import Link from "next/link";
-export const metadata={title:"Odisha Weather — OdiaDesk",description:"Local weather information for Odisha districts."};
-export default function Weather(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">ODIA DESK • WEATHER</span><h1>Odisha <span>Weather</span></h1><p>District-level weather and official warnings, built around local needs.</p></div></section><section className="section"><div className="container"><div className="notice"><strong>Weather integration is next.</strong><p>We will connect a reliable weather source before displaying live conditions or warnings.</p><Link href="/alerts" className="primary inlineButton">View local alerts</Link></div></div></section></main>}
+import CategoryPage from "@/app/components/CategoryPage";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Odisha Weather Updates — OdiaDesk", description: "Weather-related news and official warnings for Odisha districts." };
+
+export default function Weather() {
+  return <CategoryPage eyebrow="ODIA DESK • WEATHER" heading="Odisha" accent="Weather Updates" description="Weather-related reports and published warnings. This desk shows verified stories, not live forecasts." categories={["Weather"]} />;
+}
