@@ -18,6 +18,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     ? await prisma.article.findMany({
         where: {
           status: "PUBLISHED",
+          NOT: { content: { startsWith: "EDITORIAL NOTE" } },
           OR: [
             { title: { contains: q, mode: "insensitive" } },
             { excerpt: { contains: q, mode: "insensitive" } },
