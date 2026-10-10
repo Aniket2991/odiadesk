@@ -1,3 +1,8 @@
-import Link from "next/link";
-export const metadata={title:"Government Updates — OdiaDesk",description:"Official government notices, schemes and public-service updates for Odisha."};
-export default function Government(){return <main><header className="header"><div className="container nav"><Link href="/" className="brand"><span className="brandmark">O</span><span><strong>Odia</strong>Desk<small>Your Odisha. Your Local Desk.</small></span></Link><Link href="/" className="textLink">← Home</Link></div></header><section className="pageHero"><div className="container"><span className="eyebrow">ODIA DESK • GOVERNMENT</span><h1>Government <span>Updates</span></h1><p>Official notices, schemes, public services and important government information.</p></div></section><section className="section"><div className="container"><div className="notice"><strong>Government desk is ready for verified sources.</strong><p>Every published update will link back to the relevant official source.</p><Link href="/news" className="primary inlineButton">Browse verified news</Link></div></div></section></main>}
+import CategoryPage from "@/app/components/CategoryPage";
+
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Government Updates — OdiaDesk", description: "Official government notices, schemes and public-service updates for Odisha." };
+
+export default function Government() {
+  return <CategoryPage eyebrow="ODIA DESK • GOVERNMENT" heading="Government" accent="Updates" description="Government notices, schemes and public-service information. Follow the original official source before acting." categories={["Government"]} />;
+}
