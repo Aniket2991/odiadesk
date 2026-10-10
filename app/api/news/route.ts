@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { cleanHtmlText } from "@/lib/text";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
     });
 
     return Response.json(
-      { ok: true, source: "database", items },
+      { ok: true, source: "database", items: items.map((item) => ({ ...item, excerpt: cleanHtmlText(item.excerpt) })) },
       {
         headers: {
           "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
