@@ -121,17 +121,17 @@ export default async function ArticlePage({
           <h1>{a.title}</h1>
 
           {a.imageUrl && (
-            <img
-              src={a.imageUrl}
-              alt={a.title}
-              style={{
-                width: "100%",
-                maxHeight: 520,
-                objectFit: "cover",
-                borderRadius: 18,
-                margin: "20px 0",
-              }}
-            />
+            <figure className="articleHeroImage">
+              <img
+                src={a.imageUrl}
+                alt={a.title}
+                width={1200}
+                height={675}
+                fetchPriority="high"
+                decoding="async"
+              />
+              <figcaption>Lead image for this story</figcaption>
+            </figure>
           )}
 
           <p className="articleLead">{cleanHtmlText(a.excerpt)}</p>
