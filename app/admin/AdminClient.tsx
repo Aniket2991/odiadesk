@@ -160,7 +160,7 @@ export default function AdminClient() {
             <p style={{margin:"10px 0 0",fontSize:13,opacity:.7}}>{reviewReady?"✓ Ready to publish":"Complete all checks before publishing."}</p>
           </div>}
           {editing&&<div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",margin:"8px 0 16px"}}>
-            <button type="button" className="secondary" disabled={aiBusy} onClick={aiAssist}>{aiBusy?"Preparing…":"✨ AI editorial assist"}</button>
+            <button type="button" className="secondary" disabled={aiBusy} onClick={aiAssist}>{aiBusy?"Preparing…":"✨ Rewrite in English + Odia"}</button>
             {aiMessage&&<span className="formMessage">{aiMessage}</span>}
           </div>}
 
@@ -175,9 +175,14 @@ export default function AdminClient() {
           </div>
 
           <label>Article image URL <span style={{fontWeight:400,opacity:.65}}>(optional)</span><input type="url" value={form.imageUrl} onChange={e=>set("imageUrl",e.target.value)} placeholder="https://…/image.jpg" /></label>
+          <p style={{margin:"-8px 0 0",fontSize:12,lineHeight:1.6,opacity:.72}}>Importing a publisher URL may detect its lead image automatically. Use a real, story-relevant image only; verify usage rights and source before publishing. Avoid logos, unrelated stock photos and AI-generated images that imply a real event occurred.</p>
+          {form.imageUrl.trim()&&<div style={{border:"1px solid var(--line)",borderRadius:12,padding:10}}>
+            <div style={{fontSize:11,fontWeight:800,marginBottom:8}}>IMAGE PREVIEW</div>
+            <img src={form.imageUrl} alt="Article image preview" style={{display:"block",width:"100%",maxHeight:240,objectFit:"cover",borderRadius:8}} />
+          </div>}
 
           <div className="formTwo">
-            <label>Language<select value={form.language} onChange={e=>set("language",e.target.value)}><option value="ENGLISH">English</option><option value="ODIA">Odia</option></select></label>
+            <label>Language<select value={form.language} onChange={e=>set("language",e.target.value)}><option value="ENGLISH">English + Odia mix</option><option value="ODIA">Mostly Odia</option></select></label>
             <label>Save as<select value={form.status} onChange={e=>set("status",e.target.value)}>{editing&&<option value="PUBLISHED">PUBLISHED</option>}<option value="DRAFT">DRAFT</option><option value="REVIEW">REVIEW</option></select></label>
           </div>
 
