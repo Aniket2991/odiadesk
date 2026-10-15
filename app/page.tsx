@@ -56,7 +56,7 @@ export default async function Home() {
 
       {articles.length > 0 && <section className="section"><div className="container">
         <div className="sectionHead"><div><span className="eyebrow">JUST PUBLISHED</span><h2>Latest from Odisha.</h2></div><Link href="/news" className="textLink">See all →</Link></div>
-        <div className="storyGrid">{articles.map((a) => <Link className="storyCard" href={"/news/" + a.slug} key={a.id}><span className="eyebrow">{a.category} · {a.district?.name || "Odisha"}</span><h2>{a.title}</h2><p>{cleanHtmlText(a.excerpt)}</p><small>{a.sourceName} · {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN") : "Recently"}</small></Link>)}</div>
+        <div className="storyGrid">{articles.map((a) => <Link className="storyCard" href={"/news/" + a.slug} key={a.id}>{a.imageUrl && <img className="storyCardImage" src={a.imageUrl} alt={a.title} loading="lazy" decoding="async" />}<span className="eyebrow">{a.category} · {a.district?.name || "Odisha"}</span><h2>{a.title}</h2><p>{cleanHtmlText(a.excerpt)}</p><small>{a.sourceName} · {a.publishedAt ? new Date(a.publishedAt).toLocaleDateString("en-IN") : "Recently"}</small></Link>)}</div>
       </div></section>}
 
       <section className="section"><div className="container">
