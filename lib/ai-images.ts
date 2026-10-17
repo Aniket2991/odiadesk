@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
  */
 export async function generateEditorialImage(title: string, excerpt = ""): Promise<string | null> {
   const geminiKey = process.env.GEMINI_API_KEY;
-  const supabaseUrl = process.env.SUPABASE_URL?.replace(/\\/$/, "");
+  const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const bucket = process.env.SUPABASE_STORAGE_BUCKET || "odiadesk-images";
   if (!geminiKey || !supabaseUrl || !supabaseKey || !/^[a-z0-9][a-z0-9-]*$/.test(bucket)) return null;
@@ -20,7 +20,7 @@ export async function generateEditorialImage(title: string, excerpt = ""): Promi
     "Represent the topic symbolically and respectfully; avoid sensationalism.",
     "Headline: " + title.slice(0, 240),
     "Context: " + excerpt.slice(0, 500)
-  ].join("\\n");
+  ].join("\n");
 
   try {
     const generated = await fetch(
@@ -43,7 +43,7 @@ export async function generateEditorialImage(title: string, excerpt = ""): Promi
     const imagePart = payload.candidates?.[0]?.content?.parts?.find(part => part.inlineData?.data);
     const base64 = imagePart?.inlineData?.data;
     const mimeType = imagePart?.inlineData?.mimeType || "image/png";
-    if (!base64 || !/^image\\/(png|jpeg|webp)$/.test(mimeType)) return null;
+    if (!base64 || !/^image\/(png|jpeg|webp)$/.test(mimeType)) return null;
 
     // Create the public bucket on first use. A conflict means it already exists.
     const bucketResponse = await fetch(`${supabaseUrl}/storage/v1/bucket`, {
