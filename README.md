@@ -25,14 +25,16 @@ OdiaDesk is a district-first Odisha information platform built with Next.js, Typ
 
 ## Nano Banana AI editorial illustrations
 
-AI illustrations are generated only when an article has no publisher image and all required provider settings are configured. Publisher images are retained. Generated illustrations are stored in Cloudinary so they persist across serverless deployments; failures fall back to a missing image rather than blocking draft creation. All collected stories remain drafts and still require human editorial review.
+AI illustrations are generated only when an article has no publisher image and all required provider settings are configured. Publisher images are retained. Generated illustrations are stored in a public Supabase Storage bucket so they persist across serverless deployments; failures fall back to a missing image rather than blocking draft creation. All collected stories remain drafts and still require human editorial review.
 
 Configure these in Vercel Project → Settings → Environment Variables (Production and Preview as appropriate):
 
 - `GEMINI_API_KEY`: authenticates Nano Banana (Gemini 2.5 Flash Image); availability, quotas, and charges depend on your Google AI account.
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: stores generated images persistently.
+- `SUPABASE_URL`: your Supabase project URL.
+- `SUPABASE_SERVICE_ROLE_KEY`: server-only service-role key used to create the public image bucket and upload files. Never expose it in client-side code.
+- `SUPABASE_STORAGE_BUCKET` (optional): bucket name; defaults to `odiadesk-images`. The app creates this public bucket on first use.
 
-The editorial form also includes **Generate AI illustration** for manual generation. Do not use generated art as documentary evidence or imply it depicts the real event. Review every image before publishing. Without these variables, the feature stays inactive and the site continues working normally.
+The editorial form also includes **Generate AI illustration** for manual generation. Do not use generated art as documentary evidence or imply it depicts the real event. Review every image before publishing. Without these variables, the feature stays inactive and the site continues working normally. Supabase's Free plan currently includes 1 GB Storage and 5 GB cached plus 5 GB uncached egress; usage beyond free quotas may require a paid plan. See [Supabase pricing](https://supabase.com/pricing).
 
 ## Environment
 
