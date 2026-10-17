@@ -97,7 +97,17 @@ export async function POST(request: Request) {
     const title = meta(html, "og:title") || meta(html, "twitter:title") || htmlTitle(html);
     const description = meta(html, "og:description") || meta(html, "description") || meta(html, "twitter:description");
     const imageCandidate = meta(html, "og:image") || meta(html, "twitter:image");
-    const imageUrl = imageCandidate && isSafeHttpUrl(imageCandidate) ? imageCandidate : null;
+    let imageUrl: string | null = null;
+    if (imageCandidate) {
+      try {
+        const resolvedImage = new URL(imageCandidate, fetchUrl);
+        if (resolvedImage.protocol === "https:" && !blockedHost(resolvedImage.hostname)) {
+          imageUrl = resolvedImage.toString();
+        }
+      } catch {
+        imageUrl = null;
+      }
+    }
     if (!title) return NextResponse.json({error: "Could not detect a headline. Create the draft manually."}, {status: 400});
 
     let slug = slugify(title) || "imported-story";
