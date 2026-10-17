@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { isValidAdminToken, ADMIN_COOKIE } from "@/lib/admin-auth";
-import { generateEditorialImage } from "@/lib/ai-images";
+import { generateEditorialImageDetailed } from "@/lib/ai-images";
 
 export const maxDuration = 60;
 
@@ -26,12 +26,11 @@ export async function POST(request: Request) {
   if (typeof body.title !== "string" || !body.title.trim()) {
     return NextResponse.json({ error: "A headline is required." }, { status: 400 });
   }
-  const imageUrl = await generateEditorialImage(body.title.trim(), typeof body.excerpt === "string" ? body.excerpt : "");
-  if (!imageUrl) {
-    return NextResponse.json({
-      error: "Image generation is not configured or failed. Set GEMINI_API_KEY, SUPABASE_URL, and SUPABASE_SERVICE_ROLE_KEY in Vercel, then try again."
-    }, { status: 503 });
+  const result = await generateEditorialImageDetailed(body.title.trim(), typeof body.excerpt === "string" ? body.excerpt : "");
+  if (!result.imageUrl) {
+    return NextResponse.json({ error: result.error }, { status: 503 });
   }
+  const imageUrl = result.imageUrl;
 
   if (typeof body.articleId === "string" && body.articleId) {
     const article = await prisma.article.findUnique({ where: { id: body.articleId } });
