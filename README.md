@@ -23,7 +23,7 @@ OdiaDesk is a district-first Odisha information platform built with Next.js, Typ
 - Vercel Cron is configured for one daily collection run.
 - Collected stories are never auto-published.
 
-## Optional AI editorial illustrations
+## Nano Banana AI editorial illustrations
 
 AI illustrations are generated only when an article has no publisher image and all required provider settings are configured. Publisher images are retained. Generated illustrations are stored in Cloudinary so they persist across serverless deployments; failures fall back to a missing image rather than blocking draft creation. All collected stories remain drafts and still require human editorial review.
 
