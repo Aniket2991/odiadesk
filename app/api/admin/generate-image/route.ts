@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   const imageUrl = await generateEditorialImage(body.title.trim(), typeof body.excerpt === "string" ? body.excerpt : "");
   if (!imageUrl) {
     return NextResponse.json({
-      error: "Image generation is not configured or failed. Set OPENAI_API_KEY and Cloudinary credentials in Vercel, then try again."
+      error: "Image generation is not configured or failed. Set GEMINI_API_KEY and Cloudinary credentials in Vercel, then try again."
     }, { status: 503 });
   }
 
