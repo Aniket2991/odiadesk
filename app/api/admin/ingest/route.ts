@@ -5,7 +5,7 @@ import { isValidAdminToken, ADMIN_COOKIE } from "@/lib/admin-auth";
 import { isSafeHttpUrl } from "@/lib/validation";
 import { generateEditorialImage } from "@/lib/ai-images";
 
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 async function authorized() {
   const jar = await cookies();
