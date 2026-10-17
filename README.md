@@ -23,6 +23,17 @@ OdiaDesk is a district-first Odisha information platform built with Next.js, Typ
 - Vercel Cron is configured for one daily collection run.
 - Collected stories are never auto-published.
 
+## Optional AI editorial illustrations
+
+AI illustrations are generated only when an article has no publisher image and all required provider settings are configured. Publisher images are retained. Generated illustrations are stored in Cloudinary so they persist across serverless deployments; failures fall back to a missing image rather than blocking draft creation. All collected stories remain drafts and still require human editorial review.
+
+Configure these in Vercel Project → Settings → Environment Variables (Production and Preview as appropriate):
+
+- `OPENAI_API_KEY`: enables OpenAI image generation; usage may incur charges.
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: stores generated images persistently.
+
+The editorial form also includes **Generate AI illustration** for manual generation. Do not use generated art as documentary evidence or imply it depicts the real event. Review every image before publishing. Without these variables, the feature stays inactive and the site continues working normally.
+
 ## Environment
 
 Copy `.env.example` to `.env.local`.
