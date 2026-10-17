@@ -8,6 +8,7 @@ type FeedItem = {
   description: string;
   sourceName: string;
   pubDate: string;
+  imageUrl: string;
 };
 
 const FEEDS = [
@@ -25,6 +26,29 @@ function clean(value: string): string {
 function field(block: string, name: string): string {
   const match = block.match(new RegExp("<" + name + "[^>]*>([\\s\\S]*?)</" + name + ">", "i"));
   return clean(match?.[1] ?? "");
+}
+
+function feedImage(block: string): string {
+  const candidates = [
+    block.match(/<media:content[^>]*url=["']([^"']+)["'][^>]*>/i)?.[1],
+    block.match(/<media:thumbnail[^>]*url=["']([^"']+)["'][^>]*>/i)?.[1],
+    block.match(/<enclosure[^>]*url=["']([^"']+)["'][^>]*>/i)?.[1],
+  ];
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    try {
+      const url = new URL(candidate);
+      if (url.protocol === "https:" && !blockedImageHost(url.hostname)) return url.toString();
+    } catch {}
+  }
+  return "";
+}
+
+function blockedImageHost(hostname: string): boolean {
+  const h = hostname.toLowerCase();
+  return h === "localhost" || h === "::1" || h.endsWith(".local") ||
+    h.startsWith("127.") || h.startsWith("10.") || h.startsWith("192.168.") ||
+    /^172\\.(1[6-9]|2\\d|3[0-1])\\./.test(h);
 }
 
 function slugify(value: string): string {
@@ -76,6 +100,7 @@ async function getFeed(query: string): Promise<FeedItem[]> {
     description: field(block, "description"),
     sourceName: field(block, "source"),
     pubDate: field(block, "pubDate"),
+    imageUrl: feedImage(block),
   })).filter((item) => Boolean(item.title && item.link)).sort((a,b) => new Date(b.pubDate || 0).getTime() - new Date(a.pubDate || 0).getTime());
 }
 
@@ -135,6 +160,7 @@ export async function collectNews() {
             category: categoryFor(item.title, feed.category),
             sourceName: item.sourceName || "Source publisher",
             sourceUrl,
+            imageUrl: item.imageUrl || null,
             language: "ENGLISH",
             status: "DRAFT",
             districtId: district?.id ?? null,
