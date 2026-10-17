@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { isValidAdminToken, ADMIN_COOKIE } from "@/lib/admin-auth";
 import { isSafeHttpUrl } from "@/lib/validation";
-import { generateEditorialImage } from "@/lib/ai-images";
 
 export const maxDuration = 60;
 
@@ -113,8 +112,7 @@ export async function POST(request: Request) {
     }
     if (!title) return NextResponse.json({error: "Could not detect a headline. Create the draft manually."}, {status: 400});
 
-    // Preserve publisher imagery; generate a topic illustration only when none exists.
-    if (!imageUrl) imageUrl = await generateEditorialImage(title, description || "");
+    // If no publisher image is detected, the editor can add one manually.
 
     let slug = slugify(title) || "imported-story";
     const existing = await prisma.article.findUnique({where: {slug}});
