@@ -22,8 +22,6 @@ export default function AdminClient() {
   const [collectMessage,setCollectMessage]=useState("");
   const [aiBusy,setAiBusy]=useState(false);
   const [aiMessage,setAiMessage]=useState("");
-  const [imageBusy,setImageBusy]=useState(false);
-  const [imageMessage,setImageMessage]=useState("");
   const [sourceUrl,setSourceUrl]=useState("");
   const [editing,setEditing]=useState<Article|null>(null);
   const [form,setForm]=useState(emptyForm);
@@ -67,18 +65,6 @@ export default function AdminClient() {
     setAiBusy(false);
   }
 
-  async function generateImage(){
-    setImageBusy(true);setImageMessage("");
-    try {
-      const payload:Record<string,string>={title:form.title,excerpt:form.excerpt};
-      if(editing) payload.articleId=editing.id;
-      const r=await fetch("/api/admin/generate-image",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(payload)});
-      const d=await r.json();
-      if(!r.ok) setImageMessage(d.error||"Could not generate an image.");
-      else {set("imageUrl",d.imageUrl);setImageMessage("AI illustration ready. Preview it and verify suitability before publishing.");load();}
-    } catch {setImageMessage("Image generation failed. Check configuration and try again.");}
-    setImageBusy(false);
-  }
 
   async function submit(e:FormEvent){
     e.preventDefault();
@@ -190,8 +176,6 @@ export default function AdminClient() {
           </div>
 
           <label>Article image URL <span style={{fontWeight:400,opacity:.65}}>(optional)</span><input type="url" value={form.imageUrl} onChange={e=>set("imageUrl",e.target.value)} placeholder="https://…/image.jpg" /></label>
-          <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",marginTop:-6}}><button type="button" className="secondary" disabled={imageBusy||!form.title.trim()} onClick={generateImage}>{imageBusy?"Generating image…":"✨ Generate AI illustration"}</button><span style={{fontSize:12,opacity:.75}}>Requires configured image-generation and storage keys.</span></div>
-          {imageMessage&&<p className="formMessage">{imageMessage}</p>}
           <p style={{margin:"-8px 0 0",fontSize:12,lineHeight:1.6,opacity:.72}}>Importing a publisher URL may detect its lead image automatically. Use a real, story-relevant image only; verify usage rights and source before publishing. Avoid logos, unrelated stock photos and AI-generated images that imply a real event occurred.</p>
           {form.imageUrl.trim()&&<div style={{border:"1px solid var(--line)",borderRadius:12,padding:10}}>
             <div style={{fontSize:11,fontWeight:800,marginBottom:8}}>IMAGE PREVIEW</div>
