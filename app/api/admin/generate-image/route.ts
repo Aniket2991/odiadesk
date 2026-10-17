@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { isValidAdminToken, ADMIN_COOKIE } from "@/lib/admin-auth";
 import { generateEditorialImage } from "@/lib/ai-images";
 
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   const jar = await cookies();
