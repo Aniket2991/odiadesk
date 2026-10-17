@@ -26,7 +26,7 @@ export async function generateEditorialImage(title: string, excerpt = ""): Promi
       method: "POST",
       headers: { Authorization: `Bearer ${openAiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({ model: "gpt-image-1", prompt, size: "1536x1024", quality: "medium", output_format: "jpeg" }),
-      signal: AbortSignal.timeout(90000)
+      signal: AbortSignal.timeout(12000)
     });
     if (!generated.ok) return null;
     const payload = await generated.json() as { data?: Array<{ b64_json?: string }> };
