@@ -29,9 +29,8 @@ AI illustrations are generated only when an article has no publisher image and a
 
 Configure these in Vercel Project → Settings → Environment Variables (Production and Preview as appropriate):
 
-- `GEMINI_API_KEY`: uses the existing Gemini integration for image generation where the selected model is available to your key; quotas and charges depend on your Google AI plan.
+- `GEMINI_API_KEY`: authenticates Nano Banana (Gemini 2.5 Flash Image); availability, quotas, and charges depend on your Google AI account.
 - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: stores generated images persistently.
-- Optional `OPENAI_API_KEY`: fallback provider if Gemini image generation is unavailable; usage may incur charges.
 
 The editorial form also includes **Generate AI illustration** for manual generation. Do not use generated art as documentary evidence or imply it depicts the real event. Review every image before publishing. Without these variables, the feature stays inactive and the site continues working normally.
 
